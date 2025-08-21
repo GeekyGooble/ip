@@ -1,19 +1,13 @@
 import java.util.Scanner;
 
 public class Geegar {
+    private static final int UNDERSCORE_LENGTH = 60;
+    private static final String ogreEmoji = "\uD83E\uDDCC";
+    private static Task[] taskList = new Task[100];
+    private static int index = 0;
+
     public static void main(String[] args) {
-        int UNDERSCORE_LENGTH = 60;
-        String ogreEmoji = "\uD83E\uDDCC";
-
-        Task[] taskList = new Task[100];
-        int index = 0;
-
-        // saying introduction
-        System.out.println("_".repeat(UNDERSCORE_LENGTH));
-        System.out.println("Hello! I'm Geegar " + ogreEmoji);
-        System.out.println("What can I do for you today?");
-        System.out.println("_".repeat(UNDERSCORE_LENGTH));
-
+        printIntroduction();
         Scanner sc = new Scanner(System.in);
 
         // While loop to continue waiting for user input until user ends chat with "bye"
@@ -25,12 +19,7 @@ public class Geegar {
             }
 
             if (input.equalsIgnoreCase("list")) {
-                System.out.println("_".repeat(UNDERSCORE_LENGTH));
-                System.out.println(ogreEmoji + ": Here are the tasks in your list:");
-                for (int i = 0; i < index; i++) {
-                    System.out.println(i + 1 + "." + taskList[i]);
-                }
-                System.out.println("_".repeat(UNDERSCORE_LENGTH));
+                listTasks();
                 continue;
             }
 
@@ -67,9 +56,30 @@ public class Geegar {
         }
 
         // saying goodbye
-        String goodbye = "_".repeat(UNDERSCORE_LENGTH) + "\n" + ogreEmoji + ": Alright Bye ! Have a Geeky Time!\n" + "_".repeat(UNDERSCORE_LENGTH);
-        System.out.println(goodbye);
+        printGoodbye();
 
     }
+
+    private static void printIntroduction() {
+        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+        System.out.println("Hello! I'm Geegar " + ogreEmoji);
+        System.out.println("What can I do for you today?");
+        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+    }
+
+    private static void printGoodbye() {
+        String goodbye = "_".repeat(UNDERSCORE_LENGTH) + "\n" + ogreEmoji + ": Alright Bye ! Have a Geeky Time!\n" + "_".repeat(UNDERSCORE_LENGTH);
+        System.out.println(goodbye);
+    }
+
+    private static void listTasks() {
+        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+        System.out.println(ogreEmoji + ": Here are the tasks in your list:");
+        for (int i = 0; i < index; i++) {
+            System.out.println(i + 1 + "." + taskList[i]);
+        }
+        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+    }
+
 
 }
