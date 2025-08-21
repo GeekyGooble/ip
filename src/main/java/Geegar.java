@@ -34,6 +34,29 @@ public class Geegar {
                 continue;
             }
 
+            if (input.toLowerCase().startsWith("mark ")) {
+                String[] parts = input.split(" ");
+                int taskNumber = Integer.parseInt(parts[1]);
+                taskList[taskNumber - 1].markAsDone();
+                System.out.println("_".repeat(UNDERSCORE_LENGTH));
+                System.out.println(ogreEmoji + ": Nice! I've marked this task as done: ");
+                System.out.println(taskList[taskNumber - 1]);
+                System.out.println("_".repeat(UNDERSCORE_LENGTH));
+                continue;
+            }
+
+            if (input.toLowerCase().startsWith("unmark ")) {
+                String[] parts = input.split(" ");
+                int taskNumber = Integer.parseInt(parts[1]);
+                taskList[taskNumber - 1].markAsDone();
+                System.out.println("_".repeat(UNDERSCORE_LENGTH));
+                System.out.println(ogreEmoji + ": Alright! I've marked this task as not done yet: ");
+                System.out.println(taskList[taskNumber - 1]);
+                System.out.println("Lock in Harder man");
+                System.out.println("_".repeat(UNDERSCORE_LENGTH));
+                continue;
+            }
+
             // Adding a task logic
             taskList[index] = new Task(input);
             index++;
