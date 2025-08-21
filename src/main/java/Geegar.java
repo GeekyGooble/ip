@@ -57,6 +57,7 @@ public class Geegar {
 
         // saying goodbye
         printGoodbye();
+        sc.close();
 
     }
 
