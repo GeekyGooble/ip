@@ -48,7 +48,7 @@ public class Geegar {
             if (input.toLowerCase().startsWith("unmark ")) {
                 String[] parts = input.split(" ");
                 int taskNumber = Integer.parseInt(parts[1]);
-                taskList[taskNumber - 1].markAsDone();
+                taskList[taskNumber - 1].markNotDone();
                 System.out.println("_".repeat(UNDERSCORE_LENGTH));
                 System.out.println(ogreEmoji + ": Alright! I've marked this task as not done yet: ");
                 System.out.println(taskList[taskNumber - 1]);
