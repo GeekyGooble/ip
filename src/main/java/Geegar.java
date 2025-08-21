@@ -1,10 +1,10 @@
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Geegar {
     private static final int UNDERSCORE_LENGTH = 60;
     private static final String OGRE_EMOJI = "\uD83E\uDDCC";
-    private static Task[] taskList = new Task[100];
-    private static int index = 0;
+    private static ArrayList<Task> taskList = new ArrayList<>();
 
     public static void main(String[] args) {
         printIntroduction();
@@ -50,6 +50,11 @@ public class Geegar {
                     continue;
                 }
 
+                if (input.toLowerCase().startsWith("delete ")) {
+                    handleDeleteCommand(input);
+                    continue;
+                }
+
                 if (!input.isEmpty()) {
                     throw new UnknownCommandException(input);
                 }
@@ -80,15 +85,15 @@ public class Geegar {
     }
 
     private static void listTasks() {
-        if (index == 0) {
+        if (taskList.isEmpty()) {
             System.out.println("_".repeat(UNDERSCORE_LENGTH));
             System.out.println(OGRE_EMOJI + ": There are currently no tasks");
             System.out.println("_".repeat(UNDERSCORE_LENGTH));
         } else {
             System.out.println("_".repeat(UNDERSCORE_LENGTH));
             System.out.println(OGRE_EMOJI + ": Here are the tasks in your list:");
-            for (int i = 0; i < index; i++) {
-                System.out.println(i + 1 + "." + taskList[i]);
+            for (int i = 0; i < taskList.size(); i++) {
+                System.out.println(i + 1 + "." + taskList.get(i));
             }
             System.out.println("_".repeat(UNDERSCORE_LENGTH));
         }
@@ -107,26 +112,26 @@ public class Geegar {
     private static void handleMarkCommand(String input) throws InvalidTaskNumberException {
         String[] parts = input.split(" ");
         int taskNumber = Integer.parseInt(parts[1]);
-        if (taskList[taskNumber] == null) {
+        if (taskNumber < 1 || taskNumber > taskList.size()) {
             throw new InvalidTaskNumberException(parts[1]);
         }
-        taskList[taskNumber - 1].markAsDone();
+        taskList.get(taskNumber - 1).markAsDone();
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
         System.out.println(OGRE_EMOJI + ": Nice! I've marked this task as done: ");
-        System.out.println(taskList[taskNumber - 1]);
+        System.out.println(taskList.get(taskNumber - 1));
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
     }
 
     private static void handleUnmarkCommand(String input) throws InvalidTaskNumberException {
         String[] parts = input.split(" ");
         int taskNumber = Integer.parseInt(parts[1]);
-        if (taskList[taskNumber] == null) {
+        if (taskNumber < 1 || taskNumber > taskList.size()) {
             throw new InvalidTaskNumberException(parts[1]);
         }
-        taskList[taskNumber - 1].markNotDone();
+        taskList.get(taskNumber - 1).markNotDone();
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
         System.out.println(OGRE_EMOJI + ": Alright! I've marked this task as not done yet: ");
-        System.out.println(taskList[taskNumber - 1]);
+        System.out.println(taskList.get(taskNumber - 1));
         System.out.println("Lock in Harder man");
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
     }
@@ -137,13 +142,12 @@ public class Geegar {
         }
         String description = input.substring(5); // remove the todo keyword from input
 
-        taskList[index] = new Todo(description);
-        index++;
+        taskList.add(new Todo(description));
 
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
         System.out.println(OGRE_EMOJI + ": Got it. I've added this task:");
-        System.out.println(taskList[index - 1]);
-        System.out.println("Now you have " + index + " tasks in the list.");
+        System.out.println(taskList.get(taskList.size() - 1));
+        System.out.println("Now you have " + taskList.size() + " tasks in the list.");
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
 
     }
@@ -169,13 +173,12 @@ public class Geegar {
         }
 
 
-        taskList[index] = new Deadline(description, by);
-        index++;
+        taskList.add(new Deadline(description, by));
 
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
-        System.out.println(OGRE_EMOJI + ": Got it. I've added this task: ");
-        System.out.println(taskList[index - 1]);
-        System.out.println("Now you have " + index + " tasks in the list.");
+        System.out.println(OGRE_EMOJI + ": Got it. I've added this task:");
+        System.out.println(taskList.get(taskList.size() - 1));
+        System.out.println("Now you have " + taskList.size() + " tasks in the list.");
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
 
     }
@@ -207,13 +210,12 @@ public class Geegar {
             throw new InvalidFormatEventException();
         }
 
-        taskList[index] = new Event(description, from, to);
-        index++;
+        taskList.add(new Event(description, from, to));
 
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
-        System.out.println(OGRE_EMOJI + ": Got it. I've added this task: ");
-        System.out.println(taskList[index - 1]);
-        System.out.println("Now you have " + index + " tasks in the list.");
+        System.out.println(OGRE_EMOJI + ": Got it. I've added this task:");
+        System.out.println(taskList.get(taskList.size() - 1));
+        System.out.println("Now you have " + taskList.size() + " tasks in the list.");
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
 
     }
@@ -222,6 +224,25 @@ public class Geegar {
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
         System.out.println(OGRE_EMOJI + ": Ooooopsies, " + message);
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
+    }
+
+    private static void handleDeleteCommand(String input) throws GeegarException {
+        String[] parts = input.split(" ");
+        int taskNumber = Integer.parseInt(parts[1]);
+
+        if (taskNumber < 1 || taskNumber > taskList.size()) {
+            throw new InvalidTaskNumberException(parts[1]);
+        }
+
+        Task deletedTask = taskList.get(taskNumber - 1);
+        taskList.remove(taskNumber - 1);
+
+        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+        System.out.println(OGRE_EMOJI + ": Got it. I've deleted this task:");
+        System.out.println(deletedTask);
+        System.out.println("Now you have " + taskList.size() + " tasks in the list.");
+        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+
     }
 
 }
