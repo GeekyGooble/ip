@@ -5,8 +5,9 @@ public class Geegar {
         int UNDERSCORE_LENGTH = 60;
         String ogreEmoji = "\uD83E\uDDCC";
 
-        String[] listStorage = new String[100];
+        Task[] taskList = new Task[100];
         int index = 0;
+
         // saying introduction
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
         System.out.println("Hello! I'm Geegar " + ogreEmoji);
@@ -19,20 +20,22 @@ public class Geegar {
         while (true) {
             String input = sc.nextLine();
 
-            if (input.toLowerCase().equals("bye")) {
+            if (input.equalsIgnoreCase("bye")) {
                 break;
             }
 
-            if (input.toLowerCase().equals("list")) {
+            if (input.equalsIgnoreCase("list")) {
                 System.out.println("_".repeat(UNDERSCORE_LENGTH));
-                System.out.println(ogreEmoji + " Here are the tasks in your list:");
+                System.out.println(ogreEmoji + ": Here are the tasks in your list:");
                 for (int i = 0; i < index; i++) {
-                    System.out.println(i + 1 + "." + listStorage[i]);
+                    System.out.println(i + 1 + "." + taskList[i]);
                 }
                 System.out.println("_".repeat(UNDERSCORE_LENGTH));
+                continue;
             }
 
-            listStorage[index] = input;
+            // Adding a task logic
+            taskList[index] = new Task(input);
             index++;
 
             System.out.println("_".repeat(UNDERSCORE_LENGTH));
@@ -41,8 +44,9 @@ public class Geegar {
         }
 
         // saying goodbye
-        String goodbye = "_".repeat(UNDERSCORE_LENGTH) + "\n" + ogreEmoji + ": Alright Bye !! :3 Have a Geeky Time!\n" + "_".repeat(UNDERSCORE_LENGTH);
+        String goodbye = "_".repeat(UNDERSCORE_LENGTH) + "\n" + ogreEmoji + ": Alright Bye ! Have a Geeky Time!\n" + "_".repeat(UNDERSCORE_LENGTH);
         System.out.println(goodbye);
 
     }
+
 }
