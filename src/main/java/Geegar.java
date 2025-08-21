@@ -24,35 +24,16 @@ public class Geegar {
             }
 
             if (input.toLowerCase().startsWith("mark ")) {
-                String[] parts = input.split(" ");
-                int taskNumber = Integer.parseInt(parts[1]);
-                taskList[taskNumber - 1].markAsDone();
-                System.out.println("_".repeat(UNDERSCORE_LENGTH));
-                System.out.println(ogreEmoji + ": Nice! I've marked this task as done: ");
-                System.out.println(taskList[taskNumber - 1]);
-                System.out.println("_".repeat(UNDERSCORE_LENGTH));
+                handleMarkCommand(input);
                 continue;
             }
 
             if (input.toLowerCase().startsWith("unmark ")) {
-                String[] parts = input.split(" ");
-                int taskNumber = Integer.parseInt(parts[1]);
-                taskList[taskNumber - 1].markNotDone();
-                System.out.println("_".repeat(UNDERSCORE_LENGTH));
-                System.out.println(ogreEmoji + ": Alright! I've marked this task as not done yet: ");
-                System.out.println(taskList[taskNumber - 1]);
-                System.out.println("Lock in Harder man");
-                System.out.println("_".repeat(UNDERSCORE_LENGTH));
+                handleUnmarkCommand(input);
                 continue;
             }
 
-            // Adding a task logic
-            taskList[index] = new Task(input);
-            index++;
-
-            System.out.println("_".repeat(UNDERSCORE_LENGTH));
-            System.out.println(ogreEmoji + ": added: " + input);
-            System.out.println("_".repeat(UNDERSCORE_LENGTH));
+            handleAddTask(input);
         }
 
         // saying goodbye
@@ -79,6 +60,37 @@ public class Geegar {
         for (int i = 0; i < index; i++) {
             System.out.println(i + 1 + "." + taskList[i]);
         }
+        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+    }
+
+    private static void handleAddTask(String input) {
+        taskList[index] = new Task(input);
+        index++;
+
+        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+        System.out.println(ogreEmoji + ": added: " + input);
+        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+    }
+
+
+    private static void handleMarkCommand(String input) {
+        String[] parts = input.split(" ");
+        int taskNumber = Integer.parseInt(parts[1]);
+        taskList[taskNumber - 1].markAsDone();
+        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+        System.out.println(ogreEmoji + ": Nice! I've marked this task as done: ");
+        System.out.println(taskList[taskNumber - 1]);
+        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+    }
+
+    private static void handleUnmarkCommand(String input) {
+        String[] parts = input.split(" ");
+        int taskNumber = Integer.parseInt(parts[1]);
+        taskList[taskNumber - 1].markNotDone();
+        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+        System.out.println(ogreEmoji + ": Alright! I've marked this task as not done yet: ");
+        System.out.println(taskList[taskNumber - 1]);
+        System.out.println("Lock in Harder man");
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
     }
 
