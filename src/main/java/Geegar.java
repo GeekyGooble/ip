@@ -43,7 +43,10 @@ public class Geegar {
                 continue;
             }
 
-            if (input.toLowerCase().startsWith("event ")) {}
+            if (input.toLowerCase().startsWith("event ")) {
+                handleEventCommand(input);
+                continue;
+            }
 
 //            handleAddTask(input);
         }
@@ -107,7 +110,7 @@ public class Geegar {
     }
 
     private static void handleTodoCommand(String input) {
-        String description = input.substring(5); // ignore the todo at the start
+        String description = input.substring(5); // remove the todo keyword from input
         taskList[index] = new Todo(input);
         index++;
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
@@ -126,6 +129,26 @@ public class Geegar {
         String by = parts[1];
 
         taskList[index] = new Deadline(description, by);
+        index++;
+
+        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+        System.out.println(OGRE_EMOJI + ": Got it. I've added this task: ");
+        System.out.println(taskList[index - 1]);
+        System.out.println("Now you have " + index + " tasks in the list.");
+        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+
+    }
+
+    private static void handleEventCommand(String input) {
+        String content = input.substring(6); // remove the event keyword from input
+        String[] splitByFrom = content.split(" /from ");
+        String[] splitByTo = splitByFrom[1].split(" /to ");
+
+        String description = splitByFrom[0];
+        String from = splitByTo[0];
+        String to = splitByTo[1];
+
+        taskList[index] = new Event(description, from, to);
         index++;
 
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
