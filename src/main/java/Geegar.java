@@ -2,7 +2,7 @@ import java.util.Scanner;
 
 public class Geegar {
     private static final int UNDERSCORE_LENGTH = 60;
-    private static final String ogreEmoji = "\uD83E\uDDCC";
+    private static final String OGRE_EMOJI = "\uD83E\uDDCC";
     private static Task[] taskList = new Task[100];
     private static int index = 0;
 
@@ -33,6 +33,15 @@ public class Geegar {
                 continue;
             }
 
+            if (input.toLowerCase().startsWith("todo ")) {
+                handleTodoCommand(input);
+                continue;
+            }
+
+            if (input.toLowerCase().startsWith("deadline ")) {}
+
+            if (input.toLowerCase().startsWith("event ")) {}
+
             handleAddTask(input);
         }
 
@@ -44,19 +53,19 @@ public class Geegar {
 
     private static void printIntroduction() {
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
-        System.out.println("Hello! I'm Geegar " + ogreEmoji);
+        System.out.println("Hello! I'm Geegar " + OGRE_EMOJI);
         System.out.println("What can I do for you today?");
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
     }
 
     private static void printGoodbye() {
-        String goodbye = "_".repeat(UNDERSCORE_LENGTH) + "\n" + ogreEmoji + ": Alright Bye ! Have a Geeky Time!\n" + "_".repeat(UNDERSCORE_LENGTH);
+        String goodbye = "_".repeat(UNDERSCORE_LENGTH) + "\n" + OGRE_EMOJI + ": Alright Bye ! Have a Geeky Time!\n" + "_".repeat(UNDERSCORE_LENGTH);
         System.out.println(goodbye);
     }
 
     private static void listTasks() {
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
-        System.out.println(ogreEmoji + ": Here are the tasks in your list:");
+        System.out.println(OGRE_EMOJI + ": Here are the tasks in your list:");
         for (int i = 0; i < index; i++) {
             System.out.println(i + 1 + "." + taskList[i]);
         }
@@ -68,7 +77,7 @@ public class Geegar {
         index++;
 
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
-        System.out.println(ogreEmoji + ": added: " + input);
+        System.out.println(OGRE_EMOJI + ": added: " + input);
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
     }
 
@@ -78,7 +87,7 @@ public class Geegar {
         int taskNumber = Integer.parseInt(parts[1]);
         taskList[taskNumber - 1].markAsDone();
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
-        System.out.println(ogreEmoji + ": Nice! I've marked this task as done: ");
+        System.out.println(OGRE_EMOJI + ": Nice! I've marked this task as done: ");
         System.out.println(taskList[taskNumber - 1]);
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
     }
@@ -88,10 +97,21 @@ public class Geegar {
         int taskNumber = Integer.parseInt(parts[1]);
         taskList[taskNumber - 1].markNotDone();
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
-        System.out.println(ogreEmoji + ": Alright! I've marked this task as not done yet: ");
+        System.out.println(OGRE_EMOJI + ": Alright! I've marked this task as not done yet: ");
         System.out.println(taskList[taskNumber - 1]);
         System.out.println("Lock in Harder man");
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
+    }
+
+    private static void handleTodoCommand(String input) {
+        String description = input.substring(5); // ignore the todo at the start
+        taskList[index] = new Todo(input);
+        index++;
+        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+        System.out.println(OGRE_EMOJI + ": Got it. I've added this task:");
+        System.out.println(taskList[index - 1]);
+        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+        System.out.println("Now you have " + index + " tasks in the list.");
     }
 
 
