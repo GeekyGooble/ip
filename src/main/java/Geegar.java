@@ -38,11 +38,14 @@ public class Geegar {
                 continue;
             }
 
-            if (input.toLowerCase().startsWith("deadline ")) {}
+            if (input.toLowerCase().startsWith("deadline ")) {
+                handleDeadlineCommand(input);
+                continue;
+            }
 
             if (input.toLowerCase().startsWith("event ")) {}
 
-            handleAddTask(input);
+//            handleAddTask(input);
         }
 
         // saying goodbye
@@ -72,14 +75,14 @@ public class Geegar {
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
     }
 
-    private static void handleAddTask(String input) {
-        taskList[index] = new Task(input);
-        index++;
-
-        System.out.println("_".repeat(UNDERSCORE_LENGTH));
-        System.out.println(OGRE_EMOJI + ": added: " + input);
-        System.out.println("_".repeat(UNDERSCORE_LENGTH));
-    }
+//    private static void handleAddTask(String input) {
+//        taskList[index] = new Task(input);
+//        index++;
+//
+//        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+//        System.out.println(OGRE_EMOJI + ": added: " + input);
+//        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+//    }
 
 
     private static void handleMarkCommand(String input) {
@@ -110,9 +113,27 @@ public class Geegar {
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
         System.out.println(OGRE_EMOJI + ": Got it. I've added this task:");
         System.out.println(taskList[index - 1]);
-        System.out.println("_".repeat(UNDERSCORE_LENGTH));
         System.out.println("Now you have " + index + " tasks in the list.");
+        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+
     }
 
+    private static void handleDeadlineCommand(String input) {
+        String content = input.substring(9); // remove the deadline keyword from input
+        String[] parts = content.split(" /by ");
+
+        String description = parts[0];
+        String by = parts[1];
+
+        taskList[index] = new Deadline(description, by);
+        index++;
+
+        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+        System.out.println(OGRE_EMOJI + ": Got it. I've added this task: ");
+        System.out.println(taskList[index - 1]);
+        System.out.println("Now you have " + index + " tasks in the list.");
+        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+
+    }
 
 }
