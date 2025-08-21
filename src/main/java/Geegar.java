@@ -111,7 +111,7 @@ public class Geegar {
 
     private static void handleTodoCommand(String input) {
         String description = input.substring(5); // remove the todo keyword from input
-        taskList[index] = new Todo(input);
+        taskList[index] = new Todo(description);
         index++;
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
         System.out.println(OGRE_EMOJI + ": Got it. I've added this task:");
