@@ -12,7 +12,7 @@ class EmptyDescriptionException extends GeegarException {
 
 class UnknownCommandException extends GeegarException {
     public UnknownCommandException(String command) {
-        super("I don't know what ur saying bro, try 'todo', 'deadline' to add a task!");
+        super("I don't know what " + command + " means, try 'todo', 'deadline' to add a task!");
     }
 }
 

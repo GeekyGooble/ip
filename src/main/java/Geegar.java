@@ -18,40 +18,48 @@ public class Geegar {
                 break;
             }
 
-            if (input.equalsIgnoreCase("list")) {
-                listTasks();
-                continue;
-            }
+            try {
 
-            if (input.toLowerCase().startsWith("mark ")) {
-                handleMarkCommand(input);
-                continue;
-            }
+                if (input.equalsIgnoreCase("list")) {
+                    listTasks();
+                    continue;
+                }
 
-            if (input.toLowerCase().startsWith("unmark ")) {
-                handleUnmarkCommand(input);
-                continue;
-            }
+                if (input.toLowerCase().startsWith("mark ")) {
+                    handleMarkCommand(input);
+                    continue;
+                }
 
-            if (input.toLowerCase().startsWith("todo ")) {
-                handleTodoCommand(input);
-                continue;
-            }
+                if (input.toLowerCase().startsWith("unmark ")) {
+                    handleUnmarkCommand(input);
+                    continue;
+                }
 
-            if (input.toLowerCase().startsWith("deadline ")) {
-                handleDeadlineCommand(input);
-                continue;
-            }
+                if (input.toLowerCase().startsWith("todo ")) {
+                    handleTodoCommand(input);
+                    continue;
+                }
 
-            if (input.toLowerCase().startsWith("event ")) {
-                handleEventCommand(input);
-                continue;
-            }
+                if (input.toLowerCase().startsWith("deadline ")) {
+                    handleDeadlineCommand(input);
+                    continue;
+                }
 
+                if (input.toLowerCase().startsWith("event ")) {
+                    handleEventCommand(input);
+                    continue;
+                }
+
+                if (!input.isEmpty()) {
+                    throw new UnknownCommandException(input);
+                }
+
+            } catch (GeegarException e) {
+                printError(e.getMessage());
+            }
 //            handleAddTask(input);
         }
 
-        // saying goodbye
         printGoodbye();
         sc.close();
 
@@ -65,17 +73,25 @@ public class Geegar {
     }
 
     private static void printGoodbye() {
-        String goodbye = "_".repeat(UNDERSCORE_LENGTH) + "\n" + OGRE_EMOJI + ": Alright Bye ! Have a Geeky Time!\n" + "_".repeat(UNDERSCORE_LENGTH);
+        String goodbye =
+                "_".repeat(UNDERSCORE_LENGTH) + "\n" + OGRE_EMOJI
+                + ": Alright Bye ! Stay Geeky!\n" + "_".repeat(UNDERSCORE_LENGTH);
         System.out.println(goodbye);
     }
 
     private static void listTasks() {
-        System.out.println("_".repeat(UNDERSCORE_LENGTH));
-        System.out.println(OGRE_EMOJI + ": Here are the tasks in your list:");
-        for (int i = 0; i < index; i++) {
-            System.out.println(i + 1 + "." + taskList[i]);
+        if (index == 0) {
+            System.out.println("_".repeat(UNDERSCORE_LENGTH));
+            System.out.println(OGRE_EMOJI + ": There are currently no tasks");
+            System.out.println("_".repeat(UNDERSCORE_LENGTH));
+        } else {
+            System.out.println("_".repeat(UNDERSCORE_LENGTH));
+            System.out.println(OGRE_EMOJI + ": Here are the tasks in your list:");
+            for (int i = 0; i < index; i++) {
+                System.out.println(i + 1 + "." + taskList[i]);
+            }
+            System.out.println("_".repeat(UNDERSCORE_LENGTH));
         }
-        System.out.println("_".repeat(UNDERSCORE_LENGTH));
     }
 
 //    private static void handleAddTask(String input) {
@@ -88,9 +104,12 @@ public class Geegar {
 //    }
 
 
-    private static void handleMarkCommand(String input) {
+    private static void handleMarkCommand(String input) throws InvalidTaskNumberException {
         String[] parts = input.split(" ");
         int taskNumber = Integer.parseInt(parts[1]);
+        if (taskList[taskNumber] == null) {
+            throw new InvalidTaskNumberException(parts[1]);
+        }
         taskList[taskNumber - 1].markAsDone();
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
         System.out.println(OGRE_EMOJI + ": Nice! I've marked this task as done: ");
@@ -98,9 +117,12 @@ public class Geegar {
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
     }
 
-    private static void handleUnmarkCommand(String input) {
+    private static void handleUnmarkCommand(String input) throws InvalidTaskNumberException {
         String[] parts = input.split(" ");
         int taskNumber = Integer.parseInt(parts[1]);
+        if (taskList[taskNumber] == null) {
+            throw new InvalidTaskNumberException(parts[1]);
+        }
         taskList[taskNumber - 1].markNotDone();
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
         System.out.println(OGRE_EMOJI + ": Alright! I've marked this task as not done yet: ");
@@ -109,10 +131,15 @@ public class Geegar {
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
     }
 
-    private static void handleTodoCommand(String input) {
+    private static void handleTodoCommand(String input) throws GeegarException {
+        if (input.length() <= 5) {
+            throw new EmptyDescriptionException("todo");
+        }
         String description = input.substring(5); // remove the todo keyword from input
+
         taskList[index] = new Todo(description);
         index++;
+
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
         System.out.println(OGRE_EMOJI + ": Got it. I've added this task:");
         System.out.println(taskList[index - 1]);
@@ -121,12 +148,26 @@ public class Geegar {
 
     }
 
-    private static void handleDeadlineCommand(String input) {
+    private static void handleDeadlineCommand(String input) throws GeegarException {
+        if (input.length() <= 9) {
+            throw new EmptyDescriptionException("deadline");
+        }
         String content = input.substring(9); // remove the deadline keyword from input
+        if (!content.contains( " /by ")) {
+            throw new InvalidFormatDeadlineException();
+        }
         String[] parts = content.split(" /by ");
 
         String description = parts[0];
+        if (description.isEmpty()) {
+            throw new EmptyDescriptionException("Deadline");
+        }
         String by = parts[1];
+
+        if (by.isEmpty()) {
+            throw new InvalidFormatDeadlineException();
+        }
+
 
         taskList[index] = new Deadline(description, by);
         index++;
@@ -139,14 +180,32 @@ public class Geegar {
 
     }
 
-    private static void handleEventCommand(String input) {
+    private static void handleEventCommand(String input) throws GeegarException {
+        if (input.length() <= 6) { throw new EmptyDescriptionException("event"); }
         String content = input.substring(6); // remove the event keyword from input
+
+        if (!content.contains( " /from ")) {
+            throw new InvalidFormatEventException();
+        }
+
         String[] splitByFrom = content.split(" /from ");
+        if (splitByFrom.length != 2) {
+            throw new InvalidFormatEventException();
+        }
+        if (!splitByFrom[1].contains(" /to ")) {
+            throw new InvalidFormatEventException();
+        }
         String[] splitByTo = splitByFrom[1].split(" /to ");
 
         String description = splitByFrom[0];
+        if (description.isEmpty()) {
+            throw new EmptyDescriptionException("Event");
+        }
         String from = splitByTo[0];
         String to = splitByTo[1];
+        if (from.isEmpty() || to.isEmpty()) {
+            throw new InvalidFormatEventException();
+        }
 
         taskList[index] = new Event(description, from, to);
         index++;
@@ -157,6 +216,12 @@ public class Geegar {
         System.out.println("Now you have " + index + " tasks in the list.");
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
 
+    }
+
+    private static void printError(String message) {
+        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+        System.out.println(OGRE_EMOJI + ": Ooooopsies, " + message);
+        System.out.println("_".repeat(UNDERSCORE_LENGTH));
     }
 
 }
