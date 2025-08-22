@@ -1,6 +1,37 @@
 import java.util.Scanner;
 import java.util.ArrayList;
 
+enum Command {
+    LIST("list"),
+    MARK("mark"),
+    UNMARK("unmark"),
+    TODO("todo"),
+    DEADLINE("deadline"),
+    EVENT("event"),
+    DELETE("delete"),
+    BYE("bye");
+
+    private final String keyword;
+
+    Command (String keyword) {
+        this.keyword = keyword;
+    }
+
+    public String getKeyword() {
+        return this.keyword;
+    }
+
+    public static Command convertInput(String input) {
+        String command = input.toLowerCase().split(" ")[0];
+        for (Command cmd : Command.values()) {
+            if (cmd.getKeyword().equals(command)) {
+                return cmd;
+            }
+        }
+        return null;
+    }
+}
+
 public class Geegar {
     private static final int UNDERSCORE_LENGTH = 60;
     private static final String OGRE_EMOJI = "\uD83E\uDDCC";
@@ -14,49 +45,44 @@ public class Geegar {
         while (true) {
             String input = sc.nextLine();
 
-            if (input.equalsIgnoreCase("bye")) {
+            if (input.equalsIgnoreCase(Command.BYE.getKeyword())) {
                 break;
             }
 
             try {
+                Command command = Command.convertInput(input);
 
-                if (input.equalsIgnoreCase("list")) {
-                    listTasks();
+                if (command == null) {
+                    if (!input.isEmpty()) {
+                        throw new UnknownCommandException(input);
+                    }
                     continue;
                 }
 
-                if (input.toLowerCase().startsWith("mark ")) {
-                    handleMarkCommand(input);
-                    continue;
-                }
-
-                if (input.toLowerCase().startsWith("unmark ")) {
-                    handleUnmarkCommand(input);
-                    continue;
-                }
-
-                if (input.toLowerCase().startsWith("todo ")) {
-                    handleTodoCommand(input);
-                    continue;
-                }
-
-                if (input.toLowerCase().startsWith("deadline ")) {
-                    handleDeadlineCommand(input);
-                    continue;
-                }
-
-                if (input.toLowerCase().startsWith("event ")) {
-                    handleEventCommand(input);
-                    continue;
-                }
-
-                if (input.toLowerCase().startsWith("delete ")) {
-                    handleDeleteCommand(input);
-                    continue;
-                }
-
-                if (!input.isEmpty()) {
-                    throw new UnknownCommandException(input);
+                switch (command) {
+                    case LIST:
+                        listTasks();
+                        break;
+                    case MARK:
+                        handleMarkCommand(input);
+                        break;
+                    case UNMARK:
+                        handleUnmarkCommand(input);
+                        break;
+                    case TODO:
+                        handleTodoCommand(input);
+                        break;
+                    case DEADLINE:
+                        handleDeadlineCommand(input);
+                        break;
+                    case EVENT:
+                        handleEventCommand(input);
+                        break;
+                    case DELETE:
+                        handleDeleteCommand(input);
+                        break;
+                    default:
+                        throw new UnknownCommandException(input);
                 }
 
             } catch (GeegarException e) {
