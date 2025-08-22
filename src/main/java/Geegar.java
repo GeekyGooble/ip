@@ -117,7 +117,7 @@ public class Geegar {
         }
         taskList.get(taskNumber - 1).markAsDone();
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
-        System.out.println(OGRE_EMOJI + ": Nice! I've marked this task as done: ");
+        System.out.println(OGRE_EMOJI + ": Nice! I've marked this task as done:");
         System.out.println(taskList.get(taskNumber - 1));
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
     }
@@ -130,7 +130,7 @@ public class Geegar {
         }
         taskList.get(taskNumber - 1).markNotDone();
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
-        System.out.println(OGRE_EMOJI + ": Alright! I've marked this task as not done yet: ");
+        System.out.println(OGRE_EMOJI + ": Alright! I've marked this task as not done yet:");
         System.out.println(taskList.get(taskNumber - 1));
         System.out.println("Lock in Harder man");
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
