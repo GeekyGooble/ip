@@ -19,3 +19,6 @@ bin/
 # Test Artifacts
 /text-ui-test/ACTUAL.TXT
 text-ui-test/EXPECTED-UNIX.TXT
+
+# Ignores user data files
+data/
