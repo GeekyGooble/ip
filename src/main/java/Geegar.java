@@ -38,6 +38,8 @@ public class Geegar {
     private static ArrayList<Task> taskList = new ArrayList<>();
 
     public static void main(String[] args) {
+        taskList = TaskReader.loadTasks();
+
         printIntroduction();
         Scanner sc = new Scanner(System.in);
 
@@ -142,6 +144,7 @@ public class Geegar {
             throw new InvalidTaskNumberException(parts[1]);
         }
         taskList.get(taskNumber - 1).markAsDone();
+        TaskWriter.saveTasks(taskList);
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
         System.out.println(OGRE_EMOJI + ": Nice! I've marked this task as done:");
         System.out.println(taskList.get(taskNumber - 1));
@@ -155,6 +158,7 @@ public class Geegar {
             throw new InvalidTaskNumberException(parts[1]);
         }
         taskList.get(taskNumber - 1).markNotDone();
+        TaskWriter.saveTasks(taskList);
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
         System.out.println(OGRE_EMOJI + ": Alright! I've marked this task as not done yet:");
         System.out.println(taskList.get(taskNumber - 1));
@@ -168,7 +172,10 @@ public class Geegar {
         }
         String description = input.substring(5); // remove the todo keyword from input
 
-        taskList.add(new Todo(description));
+        Todo newTask = new Todo(description);
+        taskList.add(newTask);
+
+        TaskWriter.saveTasks(taskList);
 
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
         System.out.println(OGRE_EMOJI + ": Got it. I've added this task:");
@@ -199,7 +206,9 @@ public class Geegar {
         }
 
 
-        taskList.add(new Deadline(description, by));
+        Deadline newTask = new Deadline(description, by);
+        taskList.add(newTask);
+        TaskWriter.saveTasks(taskList);
 
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
         System.out.println(OGRE_EMOJI + ": Got it. I've added this task:");
@@ -236,7 +245,9 @@ public class Geegar {
             throw new InvalidFormatEventException();
         }
 
-        taskList.add(new Event(description, from, to));
+        Event newTask = new Event(description, from, to);
+        taskList.add(newTask);
+        TaskWriter.saveTasks(taskList);
 
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
         System.out.println(OGRE_EMOJI + ": Got it. I've added this task:");
@@ -262,6 +273,9 @@ public class Geegar {
 
         Task deletedTask = taskList.get(taskNumber - 1);
         taskList.remove(taskNumber - 1);
+
+        // Writes into the txt file the entire file again with deletion
+        TaskWriter.saveTasks(taskList);
 
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
         System.out.println(OGRE_EMOJI + ": Got it. I've deleted this task:");
