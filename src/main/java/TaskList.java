@@ -27,6 +27,10 @@ public class TaskList {
         return this.tasks.get(index);
     }
 
+    public ArrayList<Task> getTasks() {
+        return this.tasks;
+    }
+
     public void markTask(int index) throws InvalidTaskNumberException {
         if (index < 0 || index >= this.tasks.size()) {
             throw new InvalidTaskNumberException(String.valueOf(index + 1));
@@ -49,19 +53,21 @@ public class TaskList {
         return this.tasks.isEmpty();
     }
 
-    public void showTasksOnDate(LocalDate date) {
+    public ArrayList<Task> showTasksOnDate(LocalDate date) {
+        ArrayList<Task> tasksOnDate = new ArrayList<>();
         for (Task task : this.tasks) {
             if (task instanceof Deadline) {
                 Deadline d = (Deadline) task;
                 if (d.by.toLocalDate().equals(date)) {
-                    System.out.println(d);
+                    tasksOnDate.add(d);
                 }
             } else if (task instanceof Event) {
                 Event e = (Event) task;
                 if (e.from.toLocalDate().equals(date) || e.to.toLocalDate().equals(date)) {
-                    System.out.println(e);
+                    tasksOnDate.add(e);
                 }
             }
         }
+        return tasksOnDate;
     }
 }

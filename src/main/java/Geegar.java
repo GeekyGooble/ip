@@ -4,328 +4,352 @@ import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 import java.util.ArrayList;
 
-enum Command {
-    LIST("list"),
-    MARK("mark"),
-    UNMARK("unmark"),
-    TODO("todo"),
-    DEADLINE("deadline"),
-    EVENT("event"),
-    DELETE("delete"),
-    BYE("bye"),
-    SCHEDULE("on");
-
-    private final String keyword;
-
-    Command (String keyword) {
-        this.keyword = keyword;
-    }
-
-    public String getKeyword() {
-        return this.keyword;
-    }
-
-    public static Command convertInput(String input) {
-        String command = input.toLowerCase().split(" ")[0];
-        for (Command cmd : Command.values()) {
-            if (cmd.getKeyword().equals(command)) {
-                return cmd;
-            }
-        }
-        return null;
-    }
-}
+//enum Command {
+//    LIST("list"),
+//    MARK("mark"),
+//    UNMARK("unmark"),
+//    TODO("todo"),
+//    DEADLINE("deadline"),
+//    EVENT("event"),
+//    DELETE("delete"),
+//    BYE("bye"),
+//    SCHEDULE("on");
+//
+//    private final String keyword;
+//
+//    Command (String keyword) {
+//        this.keyword = keyword;
+//    }
+//
+//    public String getKeyword() {
+//        return this.keyword;
+//    }
+//
+//    public static Command convertInput(String input) {
+//        String command = input.toLowerCase().split(" ")[0];
+//        for (Command cmd : Command.values()) {
+//            if (cmd.getKeyword().equals(command)) {
+//                return cmd;
+//            }
+//        }
+//        return null;
+//    }
+//}
 
 public class Geegar {
-    private static final int UNDERSCORE_LENGTH = 60;
-    private static final String OGRE_EMOJI = "\uD83E\uDDCC";
-    private static ArrayList<Task> taskList = new ArrayList<>();
+    private Storage storage;
+    private TaskList tasks;
+    private Ui ui;
+
+    public Geegar(String filePath) {
+        ui = new Ui();
+        storage = new Storage(filePath);
+        try {
+            tasks = new TaskList(storage.load());
+        } catch (GeegarException e) {
+            ui.printLoadingError();
+            tasks = new TaskList();
+        }
+    }
+
+    public void run() {
+        ui.printIntroduction();
+        boolean isExit = false;
+        while (!isExit) {
+            try {
+                String fullCommand = ui.readCommand();
+                ui.showLine();
+                Command c = Parser.parse(fullCommand);
+                c.execute(tasks, ui, storage);
+                isExit = c.isExit();
+            } catch (GeegarException e) {
+                ui.printError(e.getMessage());
+            } finally {
+                ui.showLine();
+            }
+
+        }
+    }
 
     public static void main(String[] args) {
-        taskList = TaskReader.loadTasks();
-
-        printIntroduction();
-        Scanner sc = new Scanner(System.in);
-
-        // While loop to continue waiting for user input until user ends chat with "bye"
-        while (true) {
-            String input = sc.nextLine();
-
-            if (input.equalsIgnoreCase(Command.BYE.getKeyword())) {
-                break;
-            }
-
-            try {
-                Command command = Command.convertInput(input);
-
-                if (command == null) {
-                    if (!input.isEmpty()) {
-                        throw new UnknownCommandException(input);
-                    }
-                    continue;
-                }
-
-                switch (command) {
-                    case LIST:
-                        listTasks();
-                        break;
-                    case MARK:
-                        handleMarkCommand(input);
-                        break;
-                    case UNMARK:
-                        handleUnmarkCommand(input);
-                        break;
-                    case TODO:
-                        handleTodoCommand(input);
-                        break;
-                    case DEADLINE:
-                        handleDeadlineCommand(input);
-                        break;
-                    case EVENT:
-                        handleEventCommand(input);
-                        break;
-                    case DELETE:
-                        handleDeleteCommand(input);
-                        break;
-                    case SCHEDULE:
-                        handleOnCommand(input);
-                        break;
-                    default:
-                        throw new UnknownCommandException(input);
-                }
-
-            } catch (GeegarException e) {
-                printError(e.getMessage());
-            }
-//            handleAddTask(input);
-        }
-
-        printGoodbye();
-        sc.close();
-
-    }
-
-    private static void printIntroduction() {
-        System.out.println("_".repeat(UNDERSCORE_LENGTH));
-        System.out.println("Hello! I'm Geegar " + OGRE_EMOJI);
-        System.out.println("What can I do for you today?");
-        System.out.println("_".repeat(UNDERSCORE_LENGTH));
-    }
-
-    private static void printGoodbye() {
-        String goodbye =
-                "_".repeat(UNDERSCORE_LENGTH) + "\n" + OGRE_EMOJI
-                + ": Alright Bye ! Stay Geeky!\n" + "_".repeat(UNDERSCORE_LENGTH);
-        System.out.println(goodbye);
-    }
-
-    private static void listTasks() {
-        if (taskList.isEmpty()) {
-            System.out.println("_".repeat(UNDERSCORE_LENGTH));
-            System.out.println(OGRE_EMOJI + ": There are currently no tasks");
-            System.out.println("_".repeat(UNDERSCORE_LENGTH));
-        } else {
-            System.out.println("_".repeat(UNDERSCORE_LENGTH));
-            System.out.println(OGRE_EMOJI + ": Here are the tasks in your list:");
-            for (int i = 0; i < taskList.size(); i++) {
-                System.out.println(i + 1 + "." + taskList.get(i));
-            }
-            System.out.println("_".repeat(UNDERSCORE_LENGTH));
-        }
-    }
-
-//    private static void handleAddTask(String input) {
-//        taskList[index] = new Task(input);
-//        index++;
-//
-//        System.out.println("_".repeat(UNDERSCORE_LENGTH));
-//        System.out.println(OGRE_EMOJI + ": added: " + input);
-//        System.out.println("_".repeat(UNDERSCORE_LENGTH));
-//    }
-
-
-    private static void handleMarkCommand(String input) throws InvalidTaskNumberException {
-        String[] parts = input.split(" ");
-        int taskNumber = Integer.parseInt(parts[1]);
-        if (taskNumber < 1 || taskNumber > taskList.size()) {
-            throw new InvalidTaskNumberException(parts[1]);
-        }
-        taskList.get(taskNumber - 1).markAsDone();
-        TaskWriter.saveTasks(taskList);
-        System.out.println("_".repeat(UNDERSCORE_LENGTH));
-        System.out.println(OGRE_EMOJI + ": Nice! I've marked this task as done:");
-        System.out.println(taskList.get(taskNumber - 1));
-        System.out.println("_".repeat(UNDERSCORE_LENGTH));
-    }
-
-    private static void handleUnmarkCommand(String input) throws InvalidTaskNumberException {
-        String[] parts = input.split(" ");
-        int taskNumber = Integer.parseInt(parts[1]);
-        if (taskNumber < 1 || taskNumber > taskList.size()) {
-            throw new InvalidTaskNumberException(parts[1]);
-        }
-        taskList.get(taskNumber - 1).markNotDone();
-        TaskWriter.saveTasks(taskList);
-        System.out.println("_".repeat(UNDERSCORE_LENGTH));
-        System.out.println(OGRE_EMOJI + ": Alright! I've marked this task as not done yet:");
-        System.out.println(taskList.get(taskNumber - 1));
-        System.out.println("Lock in Harder man");
-        System.out.println("_".repeat(UNDERSCORE_LENGTH));
-    }
-
-    private static void handleTodoCommand(String input) throws GeegarException {
-        if (input.length() <= 5) {
-            throw new EmptyDescriptionException("todo");
-        }
-        String description = input.substring(5); // remove the todo keyword from input
-
-        Todo newTask = new Todo(description);
-        taskList.add(newTask);
-
-        TaskWriter.saveTasks(taskList);
-
-        System.out.println("_".repeat(UNDERSCORE_LENGTH));
-        System.out.println(OGRE_EMOJI + ": Got it. I've added this task:");
-        System.out.println(taskList.get(taskList.size() - 1));
-        System.out.println("Now you have " + taskList.size() + " tasks in the list.");
-        System.out.println("_".repeat(UNDERSCORE_LENGTH));
-
-    }
-
-    private static void handleDeadlineCommand(String input) throws GeegarException {
-        if (input.length() <= 9) {
-            throw new EmptyDescriptionException("deadline");
-        }
-        String content = input.substring(9); // remove the deadline keyword from input
-        if (!content.contains( " /by ")) {
-            throw new InvalidFormatDeadlineException();
-        }
-        String[] parts = content.split(" /by ");
-
-        String description = parts[0].trim();
-        if (description.isEmpty()) {
-            throw new EmptyDescriptionException("Deadline");
-        }
-        String byInput = parts[1].trim();
-
-        if (byInput.isEmpty()) {
-            throw new InvalidFormatDeadlineException();
-        }
-
-        // Accept format "dd/MM/yyyy HHmm" like 27/08/2025 0600
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
-        LocalDateTime by = LocalDateTime.parse(byInput, formatter);
-
-        Deadline newTask = new Deadline(description, by);
-        taskList.add(newTask);
-        TaskWriter.saveTasks(taskList);
-
-        System.out.println("_".repeat(UNDERSCORE_LENGTH));
-        System.out.println(OGRE_EMOJI + ": Got it. I've added this task:");
-        System.out.println(taskList.get(taskList.size() - 1));
-        System.out.println("Now you have " + taskList.size() + " tasks in the list.");
-        System.out.println("_".repeat(UNDERSCORE_LENGTH));
-
-    }
-
-    private static void handleEventCommand(String input) throws GeegarException {
-        if (input.length() <= 6) { throw new EmptyDescriptionException("event"); }
-        String content = input.substring(6); // remove the event keyword from input
-
-        if (!content.contains( " /from ")) {
-            throw new InvalidFormatEventException();
-        }
-
-        String[] splitByFrom = content.split(" /from ");
-        if (splitByFrom.length != 2) {
-            throw new InvalidFormatEventException();
-        }
-        if (!splitByFrom[1].contains(" /to ")) {
-            throw new InvalidFormatEventException();
-        }
-        String[] splitByTo = splitByFrom[1].split(" /to ");
-
-        String description = splitByFrom[0].trim();
-        if (description.isEmpty()) {
-            throw new EmptyDescriptionException("Event");
-        }
-        String fromInput = splitByTo[0].trim();
-        String toInput = splitByTo[1].trim();
-        if (fromInput.isEmpty() || toInput.isEmpty()) {
-            throw new InvalidFormatEventException();
-        }
-
-        // Accept format "dd/MM/yyyy HHmm" like 27/08/2025 0600
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
-        LocalDateTime from = LocalDateTime.parse(fromInput, formatter);
-        LocalDateTime to = LocalDateTime.parse(toInput, formatter);
-
-        Event newTask = new Event(description, from, to);
-        taskList.add(newTask);
-        TaskWriter.saveTasks(taskList);
-
-        System.out.println("_".repeat(UNDERSCORE_LENGTH));
-        System.out.println(OGRE_EMOJI + ": Got it. I've added this task:");
-        System.out.println(taskList.get(taskList.size() - 1));
-        System.out.println("Now you have " + taskList.size() + " tasks in the list.");
-        System.out.println("_".repeat(UNDERSCORE_LENGTH));
-
-    }
-
-    private static void printError(String message) {
-        System.out.println("_".repeat(UNDERSCORE_LENGTH));
-        System.out.println(OGRE_EMOJI + ": Ooooopsies, " + message);
-        System.out.println("_".repeat(UNDERSCORE_LENGTH));
-    }
-
-    private static void handleDeleteCommand(String input) throws GeegarException {
-        String[] parts = input.split(" ");
-        int taskNumber = Integer.parseInt(parts[1]);
-
-        if (taskNumber < 1 || taskNumber > taskList.size()) {
-            throw new InvalidTaskNumberException(parts[1]);
-        }
-
-        Task deletedTask = taskList.get(taskNumber - 1);
-        taskList.remove(taskNumber - 1);
-
-        // Writes into the txt file the entire file again with deletion
-        TaskWriter.saveTasks(taskList);
-
-        System.out.println("_".repeat(UNDERSCORE_LENGTH));
-        System.out.println(OGRE_EMOJI + ": Got it. I've deleted this task:");
-        System.out.println(deletedTask);
-        System.out.println("Now you have " + taskList.size() + " tasks in the list.");
-        System.out.println("_".repeat(UNDERSCORE_LENGTH));
-
-    }
-
-    private static void handleOnCommand(String input) throws GeegarException {
-        String timeInput = input.substring(4);
-        DateTimeFormatter inputFmt = DateTimeFormatter.ofPattern("d/M/yyyy");
-        LocalDate date = LocalDate.parse(timeInput.trim(), inputFmt);
-
-        System.out.println("_".repeat(UNDERSCORE_LENGTH));
-        System.out.println(OGRE_EMOJI + ": here are your deadlines/events due or during your requested time");
-        showTasksOnDate(date);
-        System.out.println("_".repeat(UNDERSCORE_LENGTH));
-
-    }
-
-    public static void showTasksOnDate(LocalDate date) {
-        for (Task task : taskList) {
-            if (task instanceof Deadline) {
-                Deadline d = (Deadline) task;
-                if (d.by.toLocalDate().equals(date)) {
-                    System.out.println(d);
-                }
-            } else if (task instanceof Event) {
-                Event e = (Event) task;
-                if (e.from.toLocalDate().equals(date) || e.to.toLocalDate().equals(date)) {
-                    System.out.println(e);
-                }
-            }
-        }
+        new Geegar("data/tasks.txt").run();
     }
 
 }
+//    private static final int UNDERSCORE_LENGTH = 60;
+//    private static final String OGRE_EMOJI = "\uD83E\uDDCC";
+//    private static ArrayList<Task> taskList = new ArrayList<>();
+//
+//    public static void main(String[] args) {
+//        taskList = TaskReader.loadTasks();
+//
+//        printIntroduction();
+//        Scanner sc = new Scanner(System.in);
+//
+//        // While loop to continue waiting for user input until user ends chat with "bye"
+//        while (true) {
+//            String input = sc.nextLine();
+//
+//            if (input.equalsIgnoreCase(Command.BYE.getKeyword())) {
+//                break;
+//            }
+//
+//            try {
+//                Command command = Command.convertInput(input);
+//
+//                if (command == null) {
+//                    if (!input.isEmpty()) {
+//                        throw new UnknownCommandException(input);
+//                    }
+//                    continue;
+//                }
+//
+//                switch (command) {
+//                    case LIST:
+//                        listTasks();
+//                        break;
+//                    case MARK:
+//                        handleMarkCommand(input);
+//                        break;
+//                    case UNMARK:
+//                        handleUnmarkCommand(input);
+//                        break;
+//                    case TODO:
+//                        handleTodoCommand(input);
+//                        break;
+//                    case DEADLINE:
+//                        handleDeadlineCommand(input);
+//                        break;
+//                    case EVENT:
+//                        handleEventCommand(input);
+//                        break;
+//                    case DELETE:
+//                        handleDeleteCommand(input);
+//                        break;
+//                    case SCHEDULE:
+//                        handleOnCommand(input);
+//                        break;
+//                    default:
+//                        throw new UnknownCommandException(input);
+//                }
+//
+//            } catch (GeegarException e) {
+//                printError(e.getMessage());
+//            }
+////            handleAddTask(input);
+//        }
+//
+//        printGoodbye();
+//        sc.close();
+//
+//    }
+//
+//    private static void printIntroduction() {
+//        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+//        System.out.println("Hello! I'm Geegar " + OGRE_EMOJI);
+//        System.out.println("What can I do for you today?");
+//        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+//    }
+//
+//    private static void printGoodbye() {
+//        String goodbye =
+//                "_".repeat(UNDERSCORE_LENGTH) + "\n" + OGRE_EMOJI
+//                + ": Alright Bye ! Stay Geeky!\n" + "_".repeat(UNDERSCORE_LENGTH);
+//        System.out.println(goodbye);
+//    }
+//
+//    private static void listTasks() {
+//        if (taskList.isEmpty()) {
+//            System.out.println("_".repeat(UNDERSCORE_LENGTH));
+//            System.out.println(OGRE_EMOJI + ": There are currently no tasks");
+//            System.out.println("_".repeat(UNDERSCORE_LENGTH));
+//        } else {
+//            System.out.println("_".repeat(UNDERSCORE_LENGTH));
+//            System.out.println(OGRE_EMOJI + ": Here are the tasks in your list:");
+//            for (int i = 0; i < taskList.size(); i++) {
+//                System.out.println(i + 1 + "." + taskList.get(i));
+//            }
+//            System.out.println("_".repeat(UNDERSCORE_LENGTH));
+//        }
+//    }
+//
+////    private static void handleAddTask(String input) {
+////        taskList[index] = new Task(input);
+////        index++;
+////
+////        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+////        System.out.println(OGRE_EMOJI + ": added: " + input);
+////        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+////    }
+//
+//
+//    private static void handleMarkCommand(String input) throws InvalidTaskNumberException {
+//        String[] parts = input.split(" ");
+//        int taskNumber = Integer.parseInt(parts[1]);
+//        if (taskNumber < 1 || taskNumber > taskList.size()) {
+//            throw new InvalidTaskNumberException(parts[1]);
+//        }
+//        taskList.get(taskNumber - 1).markAsDone();
+//        TaskWriter.saveTasks(taskList);
+//        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+//        System.out.println(OGRE_EMOJI + ": Nice! I've marked this task as done:");
+//        System.out.println(taskList.get(taskNumber - 1));
+//        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+//    }
+//
+//    private static void handleUnmarkCommand(String input) throws InvalidTaskNumberException {
+//        String[] parts = input.split(" ");
+//        int taskNumber = Integer.parseInt(parts[1]);
+//        if (taskNumber < 1 || taskNumber > taskList.size()) {
+//            throw new InvalidTaskNumberException(parts[1]);
+//        }
+//        taskList.get(taskNumber - 1).markNotDone();
+//        TaskWriter.saveTasks(taskList);
+//        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+//        System.out.println(OGRE_EMOJI + ": Alright! I've marked this task as not done yet:");
+//        System.out.println(taskList.get(taskNumber - 1));
+//        System.out.println("Lock in Harder man");
+//        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+//    }
+//
+//    private static void handleTodoCommand(String input) throws GeegarException {
+//        if (input.length() <= 5) {
+//            throw new EmptyDescriptionException("todo");
+//        }
+//        String description = input.substring(5); // remove the todo keyword from input
+//
+//        Todo newTask = new Todo(description);
+//        taskList.add(newTask);
+//
+//        TaskWriter.saveTasks(taskList);
+//
+//        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+//        System.out.println(OGRE_EMOJI + ": Got it. I've added this task:");
+//        System.out.println(taskList.get(taskList.size() - 1));
+//        System.out.println("Now you have " + taskList.size() + " tasks in the list.");
+//        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+//
+//    }
+//
+//    private static void handleDeadlineCommand(String input) throws GeegarException {
+//        if (input.length() <= 9) {
+//            throw new EmptyDescriptionException("deadline");
+//        }
+//        String content = input.substring(9); // remove the deadline keyword from input
+//        if (!content.contains( " /by ")) {
+//            throw new InvalidFormatDeadlineException();
+//        }
+//        String[] parts = content.split(" /by ");
+//
+//        String description = parts[0].trim();
+//        if (description.isEmpty()) {
+//            throw new EmptyDescriptionException("Deadline");
+//        }
+//        String byInput = parts[1].trim();
+//
+//        if (byInput.isEmpty()) {
+//            throw new InvalidFormatDeadlineException();
+//        }
+//
+//        // Accept format "dd/MM/yyyy HHmm" like 27/08/2025 0600
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
+//        LocalDateTime by = LocalDateTime.parse(byInput, formatter);
+//
+//        Deadline newTask = new Deadline(description, by);
+//        taskList.add(newTask);
+//        TaskWriter.saveTasks(taskList);
+//
+//        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+//        System.out.println(OGRE_EMOJI + ": Got it. I've added this task:");
+//        System.out.println(taskList.get(taskList.size() - 1));
+//        System.out.println("Now you have " + taskList.size() + " tasks in the list.");
+//        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+//
+//    }
+//
+//    private static void handleEventCommand(String input) throws GeegarException {
+//        if (input.length() <= 6) { throw new EmptyDescriptionException("event"); }
+//        String content = input.substring(6); // remove the event keyword from input
+//
+//        if (!content.contains( " /from ")) {
+//            throw new InvalidFormatEventException();
+//        }
+//
+//        String[] splitByFrom = content.split(" /from ");
+//        if (splitByFrom.length != 2) {
+//            throw new InvalidFormatEventException();
+//        }
+//        if (!splitByFrom[1].contains(" /to ")) {
+//            throw new InvalidFormatEventException();
+//        }
+//        String[] splitByTo = splitByFrom[1].split(" /to ");
+//
+//        String description = splitByFrom[0].trim();
+//        if (description.isEmpty()) {
+//            throw new EmptyDescriptionException("Event");
+//        }
+//        String fromInput = splitByTo[0].trim();
+//        String toInput = splitByTo[1].trim();
+//        if (fromInput.isEmpty() || toInput.isEmpty()) {
+//            throw new InvalidFormatEventException();
+//        }
+//
+//        // Accept format "dd/MM/yyyy HHmm" like 27/08/2025 0600
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
+//        LocalDateTime from = LocalDateTime.parse(fromInput, formatter);
+//        LocalDateTime to = LocalDateTime.parse(toInput, formatter);
+//
+//        Event newTask = new Event(description, from, to);
+//        taskList.add(newTask);
+//        TaskWriter.saveTasks(taskList);
+//
+//        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+//        System.out.println(OGRE_EMOJI + ": Got it. I've added this task:");
+//        System.out.println(taskList.get(taskList.size() - 1));
+//        System.out.println("Now you have " + taskList.size() + " tasks in the list.");
+//        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+//
+//    }
+//
+//    private static void printError(String message) {
+//        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+//        System.out.println(OGRE_EMOJI + ": Ooooopsies, " + message);
+//        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+//    }
+//
+//    private static void handleDeleteCommand(String input) throws GeegarException {
+//        String[] parts = input.split(" ");
+//        int taskNumber = Integer.parseInt(parts[1]);
+//
+//        if (taskNumber < 1 || taskNumber > taskList.size()) {
+//            throw new InvalidTaskNumberException(parts[1]);
+//        }
+//
+//        Task deletedTask = taskList.get(taskNumber - 1);
+//        taskList.remove(taskNumber - 1);
+//
+//        // Writes into the txt file the entire file again with deletion
+//        TaskWriter.saveTasks(taskList);
+//
+//        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+//        System.out.println(OGRE_EMOJI + ": Got it. I've deleted this task:");
+//        System.out.println(deletedTask);
+//        System.out.println("Now you have " + taskList.size() + " tasks in the list.");
+//        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+//
+//    }
+//
+//    private static void handleOnCommand(String input) throws GeegarException {
+//        String timeInput = input.substring(4);
+//        DateTimeFormatter inputFmt = DateTimeFormatter.ofPattern("d/M/yyyy");
+//        LocalDate date = LocalDate.parse(timeInput.trim(), inputFmt);
+//
+//        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+//        System.out.println(OGRE_EMOJI + ": here are your deadlines/events due or during your requested time");
+//        // showTasksOnDate(date);
+//        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+//
+//    }
+//
+//
+//}
