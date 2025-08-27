@@ -14,7 +14,7 @@ public class TaskWriter {
 
             FileWriter writer = new FileWriter(TASKS_FILE.toString(), false);
             for (Task task : taskList) {
-                writer.write(task.toString() + "\n");
+                writer.write(task.toSaveString() + "\n");
             }
             writer.close();
         } catch (IOException e) {

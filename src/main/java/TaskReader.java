@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.FileReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class TaskReader {
@@ -62,26 +64,38 @@ public class TaskReader {
                 // [T][X] description
                 String description = taskString.substring(6);
                 task = new Todo(description, isDone);
+
             } else if (taskType == 'D') {
                 // [D][X] description (by: date);
-                String content = taskString.substring(6);
+                String content = taskString.substring(6).trim();
                 int byIndex = content.lastIndexOf(" (by: ");
                 if (byIndex != -1) {
-                    String description = content.substring(0, byIndex);
-                    String by = content.substring(byIndex + 6, content.length() - 1); // account for closing bracket
+                    String description = content.substring(0, byIndex).trim();
+                    // account for closing bracket
+                    String byString = content.substring(byIndex + 6, content.length() - 1).trim();
+
+                    // Accept format "dd/MM/yyyy HHmm" like 27/08/2025 0600
+                    LocalDateTime by = LocalDateTime.parse(byString, Task.SAVE_FORMATTER);
+
                     task = new Deadline(description, by, isDone);
                 }
             } else if (taskType == 'E') {
                 // [E][X] description (from: start to: end)
-                String content = taskString.substring(6);
+                String content = taskString.substring(6).trim();
                 int fromIndex = content.lastIndexOf(" (from: ");
                 if (fromIndex != -1) {
-                    String description = content.substring(0, fromIndex);
-                    String timeInfo = content.substring(fromIndex + 8, content.length() - 1);
+                    String description = content.substring(0, fromIndex).trim();
+                    String timeInfo = content.substring(fromIndex + 8, content.length() - 1).trim();
                     int toIndex = timeInfo.lastIndexOf(" to: ");
                     if (toIndex != -1) {
-                        String from = timeInfo.substring(0, toIndex);
-                        String to = timeInfo.substring(toIndex + 5);
+                        String fromString = timeInfo.substring(0, toIndex).trim();
+                        String toString = timeInfo.substring(toIndex + 5).trim();
+
+                        // Accept format "dd/MM/yyyy HHmm" like 27/08/2025 0600
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
+                        LocalDateTime from = LocalDateTime.parse(fromString, Task.SAVE_FORMATTER);
+                        LocalDateTime to = LocalDateTime.parse(toString, Task.SAVE_FORMATTER);
+
                         task = new Event(description, from, to, isDone);
                     }
                 }

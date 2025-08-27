@@ -1,3 +1,6 @@
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 import java.util.ArrayList;
 
@@ -9,7 +12,8 @@ enum Command {
     DEADLINE("deadline"),
     EVENT("event"),
     DELETE("delete"),
-    BYE("bye");
+    BYE("bye"),
+    SCHEDULE("on");
 
     private final String keyword;
 
@@ -82,6 +86,9 @@ public class Geegar {
                         break;
                     case DELETE:
                         handleDeleteCommand(input);
+                        break;
+                    case SCHEDULE:
+                        handleOnCommand(input);
                         break;
                     default:
                         throw new UnknownCommandException(input);
@@ -195,16 +202,19 @@ public class Geegar {
         }
         String[] parts = content.split(" /by ");
 
-        String description = parts[0];
+        String description = parts[0].trim();
         if (description.isEmpty()) {
             throw new EmptyDescriptionException("Deadline");
         }
-        String by = parts[1];
+        String byInput = parts[1].trim();
 
-        if (by.isEmpty()) {
+        if (byInput.isEmpty()) {
             throw new InvalidFormatDeadlineException();
         }
 
+        // Accept format "dd/MM/yyyy HHmm" like 27/08/2025 0600
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
+        LocalDateTime by = LocalDateTime.parse(byInput, formatter);
 
         Deadline newTask = new Deadline(description, by);
         taskList.add(newTask);
@@ -235,15 +245,20 @@ public class Geegar {
         }
         String[] splitByTo = splitByFrom[1].split(" /to ");
 
-        String description = splitByFrom[0];
+        String description = splitByFrom[0].trim();
         if (description.isEmpty()) {
             throw new EmptyDescriptionException("Event");
         }
-        String from = splitByTo[0];
-        String to = splitByTo[1];
-        if (from.isEmpty() || to.isEmpty()) {
+        String fromInput = splitByTo[0].trim();
+        String toInput = splitByTo[1].trim();
+        if (fromInput.isEmpty() || toInput.isEmpty()) {
             throw new InvalidFormatEventException();
         }
+
+        // Accept format "dd/MM/yyyy HHmm" like 27/08/2025 0600
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
+        LocalDateTime from = LocalDateTime.parse(fromInput, formatter);
+        LocalDateTime to = LocalDateTime.parse(toInput, formatter);
 
         Event newTask = new Event(description, from, to);
         taskList.add(newTask);
@@ -283,6 +298,34 @@ public class Geegar {
         System.out.println("Now you have " + taskList.size() + " tasks in the list.");
         System.out.println("_".repeat(UNDERSCORE_LENGTH));
 
+    }
+
+    private static void handleOnCommand(String input) throws GeegarException {
+        String timeInput = input.substring(4);
+        DateTimeFormatter inputFmt = DateTimeFormatter.ofPattern("d/M/yyyy");
+        LocalDate date = LocalDate.parse(timeInput.trim(), inputFmt);
+
+        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+        System.out.println(OGRE_EMOJI + ": here are your deadlines/events due or during your requested time");
+        showTasksOnDate(date);
+        System.out.println("_".repeat(UNDERSCORE_LENGTH));
+
+    }
+
+    public static void showTasksOnDate(LocalDate date) {
+        for (Task task : taskList) {
+            if (task instanceof Deadline) {
+                Deadline d = (Deadline) task;
+                if (d.by.toLocalDate().equals(date)) {
+                    System.out.println(d);
+                }
+            } else if (task instanceof Event) {
+                Event e = (Event) task;
+                if (e.from.toLocalDate().equals(date) || e.to.toLocalDate().equals(date)) {
+                    System.out.println(e);
+                }
+            }
+        }
     }
 
 }

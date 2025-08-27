@@ -1,6 +1,15 @@
-public class Task {
+import java.time.format.DateTimeFormatter;
+
+public abstract class Task {
     protected String description;
     protected boolean isDone;
+
+    // Machine-friendly format (for saving/reading)
+    public static final DateTimeFormatter SAVE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+
+    // Human-friendly format (for displaying to users)
+    public static final DateTimeFormatter DISPLAY_FORMATTER = DateTimeFormatter.ofPattern("MMM dd yyyy, h:mm a");
+
 
     public Task(String description) {
         this.description = description;
@@ -23,6 +32,8 @@ public class Task {
     public void markNotDone() {
         this.isDone = false;
     }
+
+    public abstract String toSaveString();
 
     @Override
     public String toString() {
