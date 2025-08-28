@@ -1,3 +1,8 @@
+package geegar.storage;
+
+import geegar.exception.GeegarException;
+import geegar.task.Task;
+
 import java.util.ArrayList;
 
 public class Storage {

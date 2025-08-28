@@ -1,3 +1,7 @@
+package geegar.storage;
+
+import geegar.task.Task;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;

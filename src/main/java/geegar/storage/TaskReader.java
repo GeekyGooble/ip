@@ -1,3 +1,10 @@
+package geegar.storage;
+
+import geegar.task.Deadline;
+import geegar.task.Event;
+import geegar.task.Task;
+import geegar.task.Todo;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -40,14 +47,14 @@ public class TaskReader {
     }
 
     /**
-     * Returns a Task Object of the respective types (todo, deadline, event)
+     * Returns a geegar.task.Task Object of the respective types (todo, deadline, event)
      * based on the txt file input written in the following format
      * [a][b] description (with possible deadline / event)
      * where a is equal to the task type 'T', 'D', 'E'
      * where b is the indication if the task has been marked done with a 'X'
      *
-     * @param taskString - based on each line (each Task)
-     * @return The actual Task type based on the type
+     * @param taskString - based on each line (each geegar.task.Task)
+     * @return The actual geegar.task.Task type based on the type
      */
 
     private static Task stringToTask(String taskString) {
@@ -104,7 +111,7 @@ public class TaskReader {
             return task;
 
         } catch (Exception e) {
-            System.err.println("Error parsing Task: " + taskString);
+            System.err.println("Error parsing geegar.task.Task: " + taskString);
             return null;
         }
     }

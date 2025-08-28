@@ -1,3 +1,12 @@
+package geegar.parser;
+
+import geegar.command.*;
+import geegar.exception.*;
+import geegar.task.Deadline;
+import geegar.task.Event;
+import geegar.task.Task;
+import geegar.task.Todo;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -42,7 +51,7 @@ public class Parser {
         }
     }
 
-    // For methods with the following format: '<Command> <Task Number>'
+    // For methods with the following format: '<geegar.Command> <geegar.task.Task Number>'
     // mark, unmark, delete
     // (e.g. mark 1)
     private static int parseTaskNumber(String arguments) throws GeegarException {

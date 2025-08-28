@@ -1,3 +1,8 @@
+package geegar.ui;
+
+import geegar.task.Task;
+import geegar.task.TaskList;
+
 import java.util.Scanner;
 
 public class Ui {
@@ -19,7 +24,7 @@ public class Ui {
 
     public void printIntroduction() {
         showLine();
-        System.out.println("Hello! I'm Geegar " + OGRE_EMOJI);
+        System.out.println("Hello! I'm geegar.Geegar " + OGRE_EMOJI);
         System.out.println("What can I do for you today?");
         showLine();
     }
