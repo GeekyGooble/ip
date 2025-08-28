@@ -23,10 +23,10 @@ public class TaskListTest {
         taskList = new TaskList();
         todo1 = new Todo("read book");
         deadline1 = new Deadline("return book",
-                LocalDateTime.of(2025, 28, 8, 18, 0));
+                LocalDateTime.of(2025, 8, 8, 18, 0));
         event1 = new Event("project meeting",
-                LocalDateTime.of(2025, 28, 8, 18, 0),
-                LocalDateTime.of(2025, 28, 8, 19, 0));
+                LocalDateTime.of(2025, 8, 8, 18, 0),
+                LocalDateTime.of(2025, 8, 8, 19, 0));
     }
 
     @Test
