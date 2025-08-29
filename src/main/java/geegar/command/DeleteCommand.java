@@ -7,6 +7,7 @@ import geegar.task.TaskList;
 import geegar.ui.Ui;
 
 public class DeleteCommand extends Command {
+
     private int taskNumber;
 
     public DeleteCommand(int taskNumber) {
