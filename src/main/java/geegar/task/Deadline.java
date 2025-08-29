@@ -2,14 +2,29 @@ package geegar.task;
 
 import java.time.LocalDateTime;
 
+/**
+ * Deadline type that contains description and a by deadline date&time
+ */
 public class Deadline extends Task {
     protected LocalDateTime by;
 
+    /**
+     * creates a deadline instance based on only the description and by date/time
+     *
+     * @param description
+     * @param by
+     */
     public Deadline(String description, LocalDateTime by) {
         super(description);
         this.by = by;
     }
 
+    /**
+     * creates a deadline instance based on the description and by date/time and if the task is completed
+     *
+     * @param description
+     * @param by
+     */
     public Deadline(String description, LocalDateTime by, Boolean isDone) {
         super(description, isDone);
         this.by = by;
