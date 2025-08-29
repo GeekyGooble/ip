@@ -26,5 +26,8 @@ public class ScheduleCommand extends Command {
         for (Task task : tasksOnDate) {
             ui.printTask(task);
         }
+        if (tasksOnDate.size() == 0) {
+            ui.printEmpty();
+        }
     }
 }

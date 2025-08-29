@@ -24,7 +24,7 @@ public class Ui {
 
     public void printIntroduction() {
         showLine();
-        System.out.println("Hello! I'm geegar.Geegar " + OGRE_EMOJI);
+        System.out.println("Hello! I'm Geegar " + OGRE_EMOJI);
         System.out.println("What can I do for you today?");
         showLine();
     }
@@ -83,6 +83,14 @@ public class Ui {
 
     public void printTask(Task task) {
         System.out.println(task);
+    }
+
+    public void printFind() {
+        System.out.println(OGRE_EMOJI + ": here are the following tasks that with similiar keywords!");
+    }
+
+    public void printEmpty() {
+        System.out.println(OGRE_EMOJI + ": There are currently no tasks! ");
     }
 
     public void close() {
