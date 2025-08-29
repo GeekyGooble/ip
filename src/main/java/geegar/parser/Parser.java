@@ -12,8 +12,23 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
+/**
+ * Parses user input into an executable Command object based on their command / keyword used
+ *
+ * This class handles the translation of raw user input strings into the corresponding command objects,
+ * breaking down each segments into the identified parameter for command execution
+ *
+ * Exceptions are thrown if the input format is invalid or incomplete.
+ */
 public class Parser {
 
+    /**
+     * Parses a full user input string and returns the corresponding Command Object
+     *
+     * @param fullCommand the raw input string entered by the user
+     * @return the Command Object that corresponds to the user input
+     * @throws GeegarException if input cannot be parsed into a valid command
+     */
     public static Command parse(String fullCommand) throws GeegarException {
         if (fullCommand.trim().isEmpty()) {
             throw new UnknownCommandException("");
@@ -54,6 +69,15 @@ public class Parser {
     // For methods with the following format: '<geegar.Command> <geegar.task.Task Number>'
     // mark, unmark, delete
     // (e.g. mark 1)
+
+    /**
+     * Parses a task number from user input
+     * Expected format: "command" "task number"
+     *
+     * @param arguments the input string containing the task number
+     * @return the task number as an integer
+     * @throws GeegarException if the argument is empty or not a valid number
+     */
     private static int parseTaskNumber(String arguments) throws GeegarException {
         if (arguments.trim().isEmpty()) {
             throw new InvalidTaskNumberException("");
@@ -65,6 +89,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses a todo command argument into a geegar.task.Todo
+     *
+     * @param arguments the description of the todo task
+     * @return Todo Object
+     * @throws GeegarException if the description is empty
+     */
     private static Task parseTodo(String arguments) throws GeegarException {
         if (arguments.trim().isEmpty()) {
             throw new EmptyDescriptionException("todo");
@@ -72,7 +103,14 @@ public class Parser {
         return new Todo(arguments.trim());
     }
 
-    // example deadline return book /by 2/12/2019 1800
+    /**
+     * Parses a deadline command argument into a geegar.task.Deadline
+     * Expected format: "description /by d/M/yyyy HHmm"
+     *
+     * @param arguments the description and deadline string
+     * @return Deadline Object
+     * @throws GeegarException if the description or date format is invalid
+     */
     private static Task parseDeadline(String arguments) throws GeegarException {
         if (arguments.trim().isEmpty()) {
             throw new EmptyDescriptionException("deadline");
@@ -102,6 +140,14 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses an event command arguemtn into a geegar.task.Event
+     * Expected format: "event /from d/M/yyyy HHmm /to d/M/yyyy HHmm"
+     *
+     * @param arguments the description and time range string
+     * @return Event Object
+     * @throws GeegarException if the description or date format is invalid
+     */
     // example: event meeting /from 2/12/2019 1800 /to 2/12/2019 1900
     private static Task parseEvent(String arguments) throws GeegarException {
         if (arguments.trim().isEmpty()) {
@@ -141,6 +187,14 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses a date string from an "on" command
+     * Expected format: "d/M/yyyy"
+     *
+     * @param arguments the date string
+     * @return the parsed localDate
+     * @throws GeegarException if the date is missing or in an invalid format
+     */
     private static LocalDate parseDate(String arguments) throws GeegarException {
         if (arguments.trim().isEmpty()) {
             throw new EmptyDescriptionException("Please provide a date in the format: dd/mm/yyyy");
