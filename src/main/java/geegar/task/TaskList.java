@@ -3,6 +3,7 @@ package geegar.task;
 import geegar.exception.*;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class TaskList {
@@ -73,5 +74,19 @@ public class TaskList {
             }
         }
         return tasksOnDate;
+    }
+
+    public ArrayList<Task> showTasksOnKeyword(String keyword) {
+        ArrayList<Task> matchedTasks = new ArrayList<>();
+        if (keyword == null || keyword.isEmpty()) {
+            return matchedTasks;
+        }
+        String reference = keyword.trim().toLowerCase();
+        for (Task t : this.tasks) {
+            if (t.getDescription().toLowerCase().contains(reference)) {
+                matchedTasks.add(t);
+            }
+        }
+        return matchedTasks;
     }
 }

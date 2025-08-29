@@ -6,25 +6,25 @@ import geegar.task.Task;
 import geegar.task.TaskList;
 import geegar.ui.Ui;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class ScheduleCommand extends Command {
-    private LocalDate date;
+public class FindCommand extends Command {
+    private String keyword;
 
-    public ScheduleCommand(LocalDate date) {
-        this.date = date;
+    public FindCommand(String keyword) {
+        this.keyword = keyword;
     }
 
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws GeegarException {
-        ui.printSchedule();
-        ArrayList<Task> tasksOnDate = tasks.showTasksOnDate(date);
-        for (Task task : tasksOnDate) {
+        ui.printFind();
+        ArrayList<Task> tasksOnKeyword = tasks.showTasksOnKeyword(keyword);
+        for (Task task : tasksOnKeyword) {
             ui.printTask(task);
         }
-        if (tasksOnDate.size() == 0) {
+        if (tasksOnKeyword.size() == 0) {
             ui.printEmpty();
         }
     }
+
 }

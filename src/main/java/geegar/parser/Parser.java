@@ -46,6 +46,8 @@ public class Parser {
                 return new AddCommand(parseEvent(arguments));
             case "on":
                 return new ScheduleCommand(parseDate(arguments));
+            case "find":
+                return new FindCommand(parseKeyword(arguments));
             default:
                 throw new UnknownCommandException(commandWord);
         }
@@ -153,5 +155,12 @@ public class Parser {
         } catch (DateTimeParseException e) {
             throw new GeegarException("Invalid date format! type in dd/mm/yyyy dumbahh");
         }
+    }
+
+    private static String parseKeyword(String arguments) throws GeegarException {
+        if (arguments.trim().isEmpty()) {
+            throw new EmptyDescriptionException("find");
+        }
+        return arguments.trim();
     }
 }
