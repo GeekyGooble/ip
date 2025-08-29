@@ -15,6 +15,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+/**
+ * Reads from the file based on storage and extracts out information on the list of tasks
+ */
 public class TaskReader {
     private static final Path TASKS_FILE = Paths.get("data", "tasks.txt");
 
