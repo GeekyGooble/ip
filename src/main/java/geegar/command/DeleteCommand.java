@@ -6,6 +6,9 @@ import geegar.task.Task;
 import geegar.task.TaskList;
 import geegar.ui.Ui;
 
+/**
+ * A Command that Deletes a task from the list
+ */
 public class DeleteCommand extends Command {
     private int taskNumber;
 

@@ -5,6 +5,9 @@ import geegar.storage.Storage;
 import geegar.task.TaskList;
 import geegar.ui.Ui;
 
+/**
+ * A Command that unmarks the task as not done
+ */
 public class UnmarkCommand extends Command {
     private int taskNumber;
 

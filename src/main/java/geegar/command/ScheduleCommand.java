@@ -9,6 +9,9 @@ import geegar.ui.Ui;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+/**
+ * A Command that shows the schedule of task based on input
+ */
 public class ScheduleCommand extends Command {
     private LocalDate date;
 

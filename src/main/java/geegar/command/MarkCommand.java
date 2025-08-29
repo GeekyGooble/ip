@@ -5,6 +5,9 @@ import geegar.storage.Storage;
 import geegar.task.TaskList;
 import geegar.ui.Ui;
 
+/**
+ * A Command that marks the given task as done
+ */
 public class MarkCommand extends Command {
     private int taskNumber;
 

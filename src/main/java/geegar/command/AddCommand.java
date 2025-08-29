@@ -6,6 +6,9 @@ import geegar.task.Task;
 import geegar.task.TaskList;
 import geegar.ui.Ui;
 
+/**
+ * A Command that adds a task to the list
+ */
 public class AddCommand extends Command {
     private Task task;
 
