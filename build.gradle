@@ -44,7 +44,7 @@ test {
 }
 
 application {
-    mainClass.set("seedu.geegar.Geegar")
+    mainClass.set("geegar.gui.Launcher")
 }
 
 shadowJar {

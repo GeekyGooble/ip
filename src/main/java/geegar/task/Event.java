@@ -40,7 +40,7 @@ public class Event extends Task {
     public String toSaveString() {
         return "[E]" + super.toString()
                 + " (from: " + this.from.format(Task.SAVE_FORMATTER)
-                + " (to: " + this.to.format(Task.SAVE_FORMATTER) + ")";
+                + " to: " + this.to.format(Task.SAVE_FORMATTER) + ")";
     }
 
     @Override

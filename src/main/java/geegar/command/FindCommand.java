@@ -1,6 +1,7 @@
 package geegar.command;
 
 import geegar.exception.GeegarException;
+import geegar.gui.Gui;
 import geegar.storage.Storage;
 import geegar.task.Task;
 import geegar.task.TaskList;
@@ -16,14 +17,14 @@ public class FindCommand extends Command {
     }
 
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) throws GeegarException {
-        ui.printFind();
+    public void execute(TaskList tasks, Gui gui, Storage storage) throws GeegarException {
+        gui.printFind();
         ArrayList<Task> tasksOnKeyword = tasks.showTasksOnKeyword(keyword);
         for (Task task : tasksOnKeyword) {
-            ui.printTask(task);
+            gui.printTask(task);
         }
         if (tasksOnKeyword.size() == 0) {
-            ui.printEmpty();
+            gui.printEmpty();
         }
     }
 

@@ -2,8 +2,8 @@ package geegar.command;
 
 import geegar.exception.GeegarException;
 import geegar.task.TaskList;
-import geegar.ui.Ui;
 import geegar.storage.Storage;
+import geegar.gui.Gui;
 
 
 public abstract class Command {
@@ -12,12 +12,12 @@ public abstract class Command {
      * Executes the command
      *
      * @param tasks
-     * @param ui
+     * @param gui
      * @param storage
      * @throws GeegarException
      */
 
-    public abstract void execute(TaskList tasks, Ui ui, Storage storage) throws GeegarException;
+    public abstract void execute(TaskList tasks, Gui gui, Storage storage) throws GeegarException;
 
     /**
      * Checks if the command is an Exit type of command

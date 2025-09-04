@@ -1,9 +1,9 @@
 package geegar.command;
 
 import geegar.exception.GeegarException;
+import geegar.gui.Gui;
 import geegar.storage.Storage;
 import geegar.task.TaskList;
-import geegar.ui.Ui;
 
 /**
  * A Command that marks the given task as done
@@ -16,9 +16,9 @@ public class MarkCommand extends Command {
     }
 
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) throws GeegarException {
+    public void execute(TaskList tasks, Gui gui, Storage storage) throws GeegarException {
         tasks.markTask(taskNumber - 1);
         storage.save(tasks.getTasks());
-        ui.printTaskMarked(tasks.get(taskNumber - 1));
+        gui.printTaskMarked(tasks.get(taskNumber - 1));
     }
 }

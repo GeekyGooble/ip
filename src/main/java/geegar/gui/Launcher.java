@@ -1,5 +1,5 @@
 
-package geegar;
+package geegar.gui;
 import javafx.application.Application;
 
 /**
