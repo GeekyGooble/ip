@@ -1,12 +1,16 @@
+
 package geegar;
 
 import geegar.command.Command;
 import geegar.exception.GeegarException;
 import geegar.parser.Parser;
+import geegar.storage.Storage;
 import geegar.task.TaskList;
 import geegar.ui.Ui;
-import geegar.storage.Storage;
 
+/**
+ * This is the main class
+ */
 public class Geegar {
     private Storage storage;
     private TaskList tasks;
