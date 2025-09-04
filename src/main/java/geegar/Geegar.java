@@ -8,6 +8,7 @@ import geegar.storage.Storage;
 import geegar.task.TaskList;
 import geegar.ui.Ui;
 import geegar.gui.Gui;
+import javafx.application.Platform;
 
 /**
  * This is the main class
@@ -63,7 +64,11 @@ public class Geegar {
             command.execute(tasks, gui, storage);
 
             if (command.isExit()) {
-                return "Alright, Bye! Stay Geeky!";
+                gui.printGoodbye();
+                String farewell = gui.getResponse();
+
+                Platform.runLater(() -> Platform.exit());
+                return farewell;
             }
 
             return gui.getResponse();
@@ -74,6 +79,7 @@ public class Geegar {
     }
 
     public String getWelcomeMessage() {
+
         return "Welcome to Geegar!";
     }
 
