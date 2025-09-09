@@ -1,10 +1,10 @@
 package geegar.command;
 
 import geegar.exception.GeegarException;
+import geegar.gui.Gui;
 import geegar.storage.Storage;
 import geegar.task.Task;
 import geegar.task.TaskList;
-import geegar.gui.Gui;
 
 /**
  * A Command that Deletes a task from the list

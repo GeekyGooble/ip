@@ -1,11 +1,13 @@
 package geegar.command;
 
 import geegar.exception.GeegarException;
-import geegar.task.TaskList;
-import geegar.storage.Storage;
 import geegar.gui.Gui;
+import geegar.storage.Storage;
+import geegar.task.TaskList;
 
-
+/**
+ * This class is the parent class that standardises the operations that a Command should have
+ */
 public abstract class Command {
 
     /**
@@ -16,7 +18,6 @@ public abstract class Command {
      * @param storage
      * @throws GeegarException
      */
-
     public abstract void execute(TaskList tasks, Gui gui, Storage storage) throws GeegarException;
 
     /**

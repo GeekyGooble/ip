@@ -3,11 +3,11 @@ package geegar;
 
 import geegar.command.Command;
 import geegar.exception.GeegarException;
+import geegar.gui.Gui;
 import geegar.parser.Parser;
 import geegar.storage.Storage;
 import geegar.task.TaskList;
 import geegar.ui.Ui;
-import geegar.gui.Gui;
 import javafx.application.Platform;
 
 /**
@@ -18,6 +18,10 @@ public class Geegar {
     private TaskList tasks;
     private Ui ui;
 
+    /**
+     * Creates an instance of a geegar object based on the filepath
+     * @param filePath
+     */
     public Geegar(String filePath) {
         ui = new Ui();
         storage = new Storage(filePath);
