@@ -13,11 +13,17 @@ public class FindCommand extends Command {
     private String keyword;
 
     public FindCommand(String keyword) {
+        assert keyword != null && !keyword.trim().isEmpty() : "Keyword cannot be null or empty";
         this.keyword = keyword;
     }
 
     @Override
     public void execute(TaskList tasks, Gui gui, Storage storage) throws GeegarException {
+
+        assert tasks != null : "TaskList must not be null";
+        assert gui != null : "Gui must not be null";
+        assert storage != null : "Storage must not be null";
+
         gui.printFind();
         ArrayList<Task> tasksOnKeyword = tasks.showTasksOnKeyword(keyword);
         for (Task task : tasksOnKeyword) {

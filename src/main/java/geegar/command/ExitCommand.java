@@ -12,6 +12,7 @@ public class ExitCommand extends Command {
 
     @Override
     public void execute(TaskList tasks, Gui gui, Storage storage) throws GeegarException {
+        assert gui != null : "Gui must not be null";
         gui.printGoodbye();
     }
 
