@@ -30,6 +30,14 @@ public class Deadline extends Task {
         this.by = by;
     }
 
+    /**
+     * Returns the "by" deadline timing
+     * @return
+     */
+    public LocalDateTime getBy() {
+        return by;
+    }
+
     @Override
     public String toSaveString() {
         return "[D]" + super.toString()

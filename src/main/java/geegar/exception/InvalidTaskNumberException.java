@@ -5,8 +5,12 @@ package geegar.exception;
  */
 public class InvalidTaskNumberException extends GeegarException {
 
+    /**
+     * Takes in the task Number and throws an error message to indicate task number doesnt exist
+     * @param taskNumber
+     */
     public InvalidTaskNumberException(String taskNumber) {
 
-        super("geegar.task.Task Number does not exist!");
+        super("Task Number " + taskNumber + " does not exist!");
     }
 }
