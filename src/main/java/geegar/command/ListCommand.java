@@ -12,6 +12,11 @@ public class ListCommand extends Command {
 
     @Override
     public void execute(TaskList tasks, Gui gui, Storage storage) throws GeegarException {
+
+        assert tasks != null : "TaskList must not be null";
+        assert gui != null : "Gui must not be null";
+        assert storage != null : "Storage must not be null";
+
         gui.printTaskList(tasks);
     }
 }
