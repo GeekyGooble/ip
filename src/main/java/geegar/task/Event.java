@@ -36,6 +36,22 @@ public class Event extends Task {
         this.to = to;
     }
 
+    /**
+     * returns the from localdatetime
+     * @return
+     */
+    public LocalDateTime getFrom() {
+        return from;
+    }
+
+    /**
+     * returns the to localdatetime
+      * @return
+     */
+    public LocalDateTime getTo() {
+        return to;
+    }
+
     @Override
     public String toSaveString() {
         return "[E]" + super.toString()

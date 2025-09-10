@@ -14,6 +14,7 @@ import geegar.command.ListCommand;
 import geegar.command.MarkCommand;
 import geegar.command.ScheduleCommand;
 import geegar.command.UnmarkCommand;
+import geegar.command.UpdateCommand;
 import geegar.exception.EmptyDescriptionException;
 import geegar.exception.GeegarException;
 import geegar.exception.InvalidFormatDeadlineException;
@@ -76,6 +77,8 @@ public class Parser {
                 return new ScheduleCommand(parseDate(arguments));
             case "find":
                 return new FindCommand(parseKeyword(arguments));
+            case "update":
+                return parseUpdateCommand(arguments);
             default:
                 throw new UnknownCommandException(commandWord);
         }
@@ -229,5 +232,81 @@ public class Parser {
             throw new EmptyDescriptionException("find");
         }
         return arguments.trim();
+    }
+
+    private static Command parseUpdateCommand(String arguments) throws GeegarException {
+        if (arguments.trim().isEmpty()) {
+            throw new EmptyDescriptionException("update command requires task number and details!");
+        }
+
+        String[] parts = arguments.trim().split(" ", 2);
+
+        int taskNumber;
+        try {
+            taskNumber = parseTaskNumber(parts[0].trim());
+        } catch (InvalidTaskNumberException e) {
+            throw new InvalidTaskNumberException(parts[0]);
+        }
+
+        if (parts.length < 2) {
+            throw new GeegarException("update command requires task number and details!");
+        }
+
+        String updateDetails = parts[1];
+
+        if (updateDetails.contains(" /from ") && updateDetails.contains(" /to ")) {
+            return parseUpdateEvent(taskNumber, updateDetails);
+        } else if (updateDetails.contains(" /by ")) {
+            return parseUpdateDeadline(taskNumber, updateDetails);
+        } else {
+            return new UpdateCommand(taskNumber, updateDetails.trim());
+        }
+    }
+
+    private static Command parseUpdateDeadline(int taskNumber, String updateDetails) throws GeegarException {
+        String[] parts = updateDetails.split(" /by ", 2);
+        String newDescription = parts[0].trim();
+        String byInput = parts[1].trim();
+
+        if (newDescription.isEmpty() || byInput.isEmpty()) {
+            throw new GeegarException("Both description and deadline dates are required!");
+        }
+
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
+            LocalDateTime newBy = LocalDateTime.parse(byInput, formatter);
+            return new UpdateCommand(taskNumber, newDescription, newBy);
+        } catch (DateTimeParseException e) {
+            throw new GeegarException("Invalid date format! type in dd/mm/yyyy dumbahh");
+        }
+    }
+
+    private static Command parseUpdateEvent(int taskNumber, String updateDetails) throws GeegarException {
+        String[] splitByFrom = updateDetails.split(" /from ", 2);
+        if (splitByFrom.length != 2 || !splitByFrom[1].contains(" /to ")) {
+            throw new GeegarException("Event update requires format: description /from date /to date");
+        }
+
+        String[] splitByTo = splitByFrom[1].split("/to ", 2);
+        if (splitByTo.length != 2) {
+            throw new GeegarException("Event update requires format: description /from date /to date");
+        }
+
+        String newDescription = splitByFrom[0].trim();
+        String fromInput = splitByTo[0].trim();
+        String toInput = splitByTo[1].trim();
+
+        if (newDescription.isEmpty() || fromInput.isEmpty() || toInput.isEmpty()) {
+            throw new GeegarException("Description, from date, and to date are all required!");
+        }
+
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
+            LocalDateTime newFrom = LocalDateTime.parse(fromInput, formatter);
+            LocalDateTime newTo = LocalDateTime.parse(toInput, formatter);
+            return new UpdateCommand(taskNumber, newDescription, newFrom, newTo);
+        } catch (DateTimeParseException e) {
+            throw new GeegarException("Invalid date format! Use d/M/yyyy HHmm");
+        }
     }
 }
