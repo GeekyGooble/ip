@@ -55,6 +55,14 @@ public abstract class Task {
     }
 
     /**
+     * Checks if the task is done or not
+     * @return
+     */
+    public boolean isDone() {
+        return this.isDone;
+    }
+
+    /**
      * Marks the tasks as done
      */
     public void markAsDone() {
