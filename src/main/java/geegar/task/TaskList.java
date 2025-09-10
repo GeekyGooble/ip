@@ -1,10 +1,9 @@
 package geegar.task;
 
-import geegar.exception.*;
-
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
+
+import geegar.exception.InvalidTaskNumberException;
 
 /**
  * Represents a list of tasks and provides operations to manage the lsit
@@ -139,6 +138,11 @@ public class TaskList {
         return tasksOnDate;
     }
 
+    /**
+     * Returns a list of task that contains the given keyword
+     * @param keyword
+     * @return
+     */
     public ArrayList<Task> showTasksOnKeyword(String keyword) {
         ArrayList<Task> matchedTasks = new ArrayList<>();
         if (keyword == null || keyword.isEmpty()) {

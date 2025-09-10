@@ -1,11 +1,10 @@
-
 package geegar.gui;
 
-import geegar.Geegar;
+import java.io.IOException;
 
+import geegar.Geegar;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import java.io.IOException;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;

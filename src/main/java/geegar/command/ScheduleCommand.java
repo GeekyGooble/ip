@@ -1,13 +1,13 @@
 package geegar.command;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+
 import geegar.exception.GeegarException;
 import geegar.gui.Gui;
 import geegar.storage.Storage;
 import geegar.task.Task;
 import geegar.task.TaskList;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
 
 /**
  * A Command that shows the schedule of task based on input

@@ -1,10 +1,13 @@
 package geegar.ui;
 
+import java.util.Scanner;
+
 import geegar.task.Task;
 import geegar.task.TaskList;
 
-import java.util.Scanner;
-
+/**
+ * This Class was the initial User Interface Class used
+ */
 public class Ui {
     private static final int UNDERSCORE_LENGTH = 60;
     private static final String OGRE_EMOJI = "\uD83E\uDDCC";

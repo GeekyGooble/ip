@@ -1,14 +1,16 @@
 package geegar.command;
 
+import java.util.ArrayList;
+
 import geegar.exception.GeegarException;
 import geegar.gui.Gui;
 import geegar.storage.Storage;
 import geegar.task.Task;
 import geegar.task.TaskList;
-import geegar.ui.Ui;
 
-import java.util.ArrayList;
-
+/**
+ * This command allows to find a Task Object based on the given keyword input
+ */
 public class FindCommand extends Command {
     private String keyword;
 
