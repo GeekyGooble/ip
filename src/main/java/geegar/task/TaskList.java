@@ -138,6 +138,11 @@ public class TaskList {
         return tasksOnDate;
     }
 
+    /**
+     * Returns a list of task that contains the given keyword
+     * @param keyword
+     * @return
+     */
     public ArrayList<Task> showTasksOnKeyword(String keyword) {
         ArrayList<Task> matchedTasks = new ArrayList<>();
         if (keyword == null || keyword.isEmpty()) {
