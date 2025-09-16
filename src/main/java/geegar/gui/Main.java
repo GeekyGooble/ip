@@ -25,6 +25,7 @@ public class Main extends Application {
             stage.setScene(scene);
             stage.setMinHeight(220);
             stage.setMinWidth(417);
+            stage.setTitle("Geegar - You Personal Partner-In-Crime");
             fxmlLoader.<MainWindow>getController().setGeegar(geegar);
             stage.show();
         } catch (IOException e) {
