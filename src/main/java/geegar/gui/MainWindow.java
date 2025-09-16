@@ -9,6 +9,8 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 /**
+ * This code was extracted from the example given during the guide
+ * for building a dialogBox from the cs2103t website
  * Controller for the main GUI.
  */
 public class MainWindow extends AnchorPane {
