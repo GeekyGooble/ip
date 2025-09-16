@@ -4,6 +4,8 @@ import geegar.task.Task;
 import geegar.task.TaskList;
 
 /**
+ *  This code was extracted from the example given during the guide
+ *  for building a dialogBox from the cs2103t website
  * GUI Compatible UI  handler that will capture the output as strings
  */
 public class Gui {
