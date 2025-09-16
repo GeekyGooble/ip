@@ -34,25 +34,6 @@ public class Geegar {
     }
 
 
-//    public void run() {
-//        ui.printIntroduction();
-//        boolean isExit = false;
-//        while (!isExit) {
-//            try {
-//                String fullCommand = ui.readCommand();
-//                ui.showLine();
-//                Command c = Parser.parse(fullCommand);
-//                c.execute(tasks, ui, storage);
-//                isExit = c.isExit();
-//            } catch (GeegarException e) {
-//                ui.printError(e.getMessage());
-//            } finally {
-//                ui.showLine();
-//            }
-//
-//        }
-//    }
-
     /**
      * Generates a response for the user's chat message.
      */
@@ -78,13 +59,17 @@ public class Geegar {
             return gui.getResponse();
 
         } catch (GeegarException e) {
-            return "Error!!: " + e.getMessage();
+            Gui gui = new Gui();
+            gui.printError(e.getMessage());
+            return gui.getResponse();
+            // return "Error!!: " + e.getMessage();
         }
     }
 
     public String getWelcomeMessage() {
-
-        return "Welcome to Geegar!";
+        Gui gui = new Gui();
+        gui.printIntroduction();
+        return gui.getResponse();
     }
 
     public static void main(String[] args) {

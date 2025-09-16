@@ -7,6 +7,7 @@ import geegar.task.TaskList;
 
 /**
  * This Class was the initial User Interface Class used
+ * It will be kept for archival and reference
  */
 public class Ui {
     private static final int UNDERSCORE_LENGTH = 60;

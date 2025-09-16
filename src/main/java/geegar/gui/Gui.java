@@ -12,6 +12,7 @@ public class Gui {
     private StringBuilder response;
 
     public Gui() {
+
         response = new StringBuilder();
     }
 
@@ -19,15 +20,18 @@ public class Gui {
      * Gets the accumulated response String
      */
     public String getResponse() {
+
         return this.response.toString().trim();
     }
 
     public void printIntroduction() {
-        this.response.append("Hello! I'm Geegar!, what can I do for you today!");
+
+        this.response.append("Hello! I'm Geegar!, what can I do for you today! >:-D");
     }
 
     public void printGoodbye() {
-        this.response.append("Alright Bye ! Stay Geeky!");
+
+        this.response.append("Alright Bye ! Stay Geeky! >:-D");
     }
 
     /**
@@ -55,10 +59,6 @@ public class Gui {
         this.response.append("Oooopsies, ").append(message);
     }
 
-    public void printLoadingError() {
-        this.response.append("Error Loading tasks from file! I'll start with an empty task list.");
-    }
-
     /**
      * Takes in the current task, and totalTask number, and returns what task has just been added
      * as well as the current state of the total number of tasks
@@ -78,7 +78,8 @@ public class Gui {
      */
     public void printTaskMarked(Task task) {
         this.response.append("Nice! I've marked this task as done!\n");
-        this.response.append(task);
+        this.response.append(task).append("\n");
+        this.response.append("You are locked in !!");
     }
 
     /**
@@ -87,9 +88,9 @@ public class Gui {
      * @param task
      */
     public void printTaskUnmarked(Task task) {
-        this.response.append("Alright! I've marked this task as NOT done!\n");
+        this.response.append("Alright! I've marked this task as NOT done !\n");
         this.response.append(task).append("\n");
-        this.response.append("Lock in Harder Man !!!");
+        this.response.append("Lock in Harder Man >:(!!!");
     }
 
     /**
@@ -100,7 +101,7 @@ public class Gui {
      * @param totalTasks
      */
     public void printTaskDeleted(Task task, int totalTasks) {
-        this.response.append("Got it, I've deleted this task: \n");
+        this.response.append("Geekity it, I've deleted this task: \n");
         this.response.append(task).append("\n");
         this.response.append("Now you have ").append(totalTasks).append(" tasks in the list.");
     }
@@ -117,6 +118,7 @@ public class Gui {
      * @param task
      */
     public void printTask(Task task) {
+
         this.response.append(task).append("\n");
     }
 
@@ -125,6 +127,7 @@ public class Gui {
      * tasks that matches that specific keyword
      */
     public void printFind() {
+
         this.response.append("Here are your tasks with similiar keywords: \n");
     }
 
@@ -132,6 +135,7 @@ public class Gui {
      * Prints out to notify that the tasklist is empty
      */
     public void printEmpty() {
-        this.response.append("There are currently no tasks found!");
+
+        this.response.append("There are currently no tasks found! stay geeky and add in more tasks man");
     }
 }
