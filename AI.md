@@ -51,3 +51,19 @@ The inputs given were also of wide range and variety, allowing me to test the di
 that a user may put to "try and break the system", and also indicates which should be validated as a 
 correct user input command and which should not be.
 <br>
+
+
+### Prompt Number:3 <br>
+#### AI Tool Utilised: <br>
+cursor
+#### Increment AI Tool was used: <br>
+improve on documentation and formatting
+#### What was it used for: <br>
+Proper formatting of documentation to properly show a user guide similiar to the AB3 User Guide's example
+#### Observations: <br>
+My initial draft of the documentation still lacked details and was not as descriptive as compared to the
+AB3 User Guide's example. Cursor helped to provide a more robust format (i.e. introduction of a UPPERCASE and
+INDEX) to make it more flexible and easier readability for users to understand the functionalities and features 
+of the app
+
+
