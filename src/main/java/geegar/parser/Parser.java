@@ -28,10 +28,8 @@ import geegar.task.Todo;
 
 /**
  * Parses user input into an executable Command object based on their command / keyword used
- *
  * This class handles the translation of raw user input strings into the corresponding command objects,
  * breaking down each segments into the identified parameter for command execution
- *
  * Exceptions are thrown if the input format is invalid or incomplete.
  */
 public class Parser {
@@ -53,10 +51,10 @@ public class Parser {
         String[] parts = fullCommand.trim().split(" ", 2);
         // first word will always be the command
         String commandWord = parts[0].toLowerCase();
-        // remaining are argument sot be inputted
+        // remaining are argumentsto be inputted
         String arguments = parts.length > 1 ? parts[1] : "";
 
-        switch (commandWord) {
+        switch (resolveCommand(commandWord)) {
             case "bye":
                 return new ExitCommand();
             case "list":
@@ -84,6 +82,31 @@ public class Parser {
         }
     }
 
+    /**
+     * This code was suggested using ClaudeAI to improve command possibilities
+     * Based on the command word, accepts various different types of input for command
+     * word to the supposed command word
+     * @param commandWord any accepted subtypes of actual command word
+     * @return the actual command word
+     */
+    private static String resolveCommand(String commandWord) {
+        String cmd = commandWord.toLowerCase();
+
+        switch (cmd) {
+            case "bye": case "exit": case "quit": return "bye";
+            case "list": case "ls": return "list";
+            case "mark": case "done": return "mark";
+            case "unmark": case "undone": return "unmark";
+            case "delete": case "del": case "remove": return "delete";
+            case "todo": case "t": return "todo";
+            case "deadline": case "d": return "deadline";
+            case "event": case "e": return "event";
+            case "find": case "search": return "find";
+            case "update": case "edit": return "update";
+            default: return cmd;
+        }
+    }
+
     // For methods with the following format: '<geegar.Command> <geegar.task.Task Number>'
     // mark, unmark, delete
     // (e.g. mark 1)
@@ -101,7 +124,12 @@ public class Parser {
             throw new InvalidTaskNumberException("");
         }
         try {
-            return Integer.parseInt(arguments.trim());
+            int taskNumber = Integer.parseInt(arguments.trim());
+            if (taskNumber < 1) {
+                throw new InvalidTaskNumberException("Task number must be positive!");
+            }
+            return taskNumber;
+
         } catch (NumberFormatException e) {
             throw new InvalidTaskNumberException(arguments);
         }
@@ -186,7 +214,7 @@ public class Parser {
             throw new InvalidFormatEventException();
         }
 
-        String description = splitByTo[0].trim();
+        String description = splitByFrom[0].trim();
         String fromInput = splitByTo[0].trim();
         String toInput = splitByTo[1].trim();
 
